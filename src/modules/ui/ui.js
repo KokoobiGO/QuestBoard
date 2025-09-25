@@ -91,22 +91,6 @@ function initUI(elements, stats) {
         } else {
             elements.userInfo.classList.add('hidden');
         }
-
-        // Delegated quest actions
-        if (elements.questsContainer) {
-            elements.questsContainer.addEventListener('click', (e) => {
-                const target = e.target.closest('button');
-                if (!target) return;
-                const card = e.target.closest('.quest-item');
-                if (!card) return;
-                const id = card.dataset.id;
-                if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
-                } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
-                }
-            });
-        }
     }
 
     /* ------------------------------------------------------------------
@@ -115,7 +99,12 @@ function initUI(elements, stats) {
     function clearQuestForm() {
         elements.questTitle.value = '';
         elements.questDescription.value = '';
-        elements.questType.value = 'Daily';
+        // Ensure the select value matches the option values defined in the
+        // HTML (lowercase with underscores) so clearing the form restores the
+        // default Daily option instead of leaving the select empty.
+        if (elements.questType) {
+            elements.questType.value = 'daily';
+        }
         elements.questDueDate.value = '';
     }
 
@@ -135,21 +124,6 @@ function initUI(elements, stats) {
             });
         }
 
-        // Delegated quest actions
-        if (elements.questsContainer) {
-            elements.questsContainer.addEventListener('click', (e) => {
-                const target = e.target.closest('button');
-                if (!target) return;
-                const card = e.target.closest('.quest-item');
-                if (!card) return;
-                const id = card.dataset.id;
-                if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
-                } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
-                }
-            });
-        }
     }
 
     /* ------------------------------------------------------------------
@@ -211,7 +185,32 @@ function initUI(elements, stats) {
      * Event-listener/* ------------------------------------------------------------------
      * Event-listener initialisation hooks
      * ---------------------------------------------------------------- */
+    const listenerState = {
+        onFilterChange: null,
+        onCompleteQuest: null,
+        onDeleteQuest: null
+    };
+
+    let filterListenersBound = false;
+    let questActionsListenerBound = false;
+
+    function getFilterValues() {
+        const type = elements.typeFilter?.value || 'all';
+        const showCompleted = !!elements.showCompleted?.checked;
+        return { type, showCompleted };
+    }
+
+    function triggerFilterChange() {
+        if (typeof listenerState.onFilterChange !== 'function') return;
+        const { type, showCompleted } = getFilterValues();
+        listenerState.onFilterChange(type, showCompleted);
+    }
+
     function initEventListeners(callbacks = {}) {
+        listenerState.onFilterChange = callbacks.onFilterChange || null;
+        listenerState.onCompleteQuest = callbacks.onCompleteQuest || null;
+        listenerState.onDeleteQuest = callbacks.onDeleteQuest || null;
+
         // Show modal
         elements.createQuestBtn?.addEventListener('click', () => toggleQuestFormModal(true));
         // Close modal
@@ -219,31 +218,41 @@ function initUI(elements, stats) {
         // Clear quest form
         elements.clearQuestBtn?.addEventListener('click', () => clearQuestForm());
 
-        // Additional external callbacks (complete, delete, filter etc.) can be wired through here
-        if (callbacks.onFilterChange) {
-            elements.typeFilter?.addEventListener('change', () => {
-                callbacks.onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
-            });
-            elements.showCompleted?.addEventListener('change', () => {
-                callbacks.onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
-            });
+        if (!filterListenersBound) {
+            filterListenersBound = true;
+            const handleFilterChange = () => triggerFilterChange();
+            elements.typeFilter?.addEventListener('change', handleFilterChange);
+            elements.showCompleted?.addEventListener('change', handleFilterChange);
         }
 
-        // Delegated quest actions
-        if (elements.questsContainer) {
-            elements.questsContainer.addEventListener('click', (e) => {
-                const target = e.target.closest('button');
-                if (!target) return;
-                const card = e.target.closest('.quest-item');
-                if (!card) return;
-                const id = card.dataset.id;
-                if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
-                } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
+        if (!questActionsListenerBound && elements.questsContainer) {
+            questActionsListenerBound = true;
+            elements.questsContainer.addEventListener('click', (event) => {
+                const button = event.target.closest('button');
+                if (!button) return;
+
+                const questCard = button.closest('.quest-item');
+                if (!questCard) return;
+
+                const questId = questCard.dataset.id;
+                if (!questId) return;
+
+                if (button.classList.contains('complete-btn')) {
+                    if (typeof listenerState.onCompleteQuest === 'function') {
+                        listenerState.onCompleteQuest(questId);
+                    }
+                } else if (button.classList.contains('delete-btn')) {
+                    if (typeof listenerState.onDeleteQuest === 'function') {
+                        listenerState.onDeleteQuest(questId);
+                    }
                 }
             });
         }
+
+        // If filters were already set before this call, immediately propagate the
+        // latest values to keep the UI and quest list in sync with the newly
+        // registered callbacks.
+        triggerFilterChange();
     }
 
     /* ------------------------------------------------------------------
