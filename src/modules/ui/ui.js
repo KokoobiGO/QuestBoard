@@ -7,6 +7,10 @@
  * @returns {Object} - Exposed UI helper functions
  */
 function initUI(elements, stats) {
+    // Keep track of the latest callbacks passed into initEventListeners so
+    // other helpers (like updateUserInfo) can safely reference them.
+    let registeredCallbacks = {};
+
     /* ------------------------------------------------------------------
      * Generic helpers
      * ---------------------------------------------------------------- */
@@ -91,22 +95,6 @@ function initUI(elements, stats) {
         } else {
             elements.userInfo.classList.add('hidden');
         }
-
-        // Delegated quest actions
-        if (elements.questsContainer) {
-            elements.questsContainer.addEventListener('click', (e) => {
-                const target = e.target.closest('button');
-                if (!target) return;
-                const card = e.target.closest('.quest-item');
-                if (!card) return;
-                const id = card.dataset.id;
-                if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
-                } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
-                }
-            });
-        }
     }
 
     /* ------------------------------------------------------------------
@@ -135,21 +123,6 @@ function initUI(elements, stats) {
             });
         }
 
-        // Delegated quest actions
-        if (elements.questsContainer) {
-            elements.questsContainer.addEventListener('click', (e) => {
-                const target = e.target.closest('button');
-                if (!target) return;
-                const card = e.target.closest('.quest-item');
-                if (!card) return;
-                const id = card.dataset.id;
-                if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
-                } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
-                }
-            });
-        }
     }
 
     /* ------------------------------------------------------------------
@@ -212,6 +185,8 @@ function initUI(elements, stats) {
      * Event-listener initialisation hooks
      * ---------------------------------------------------------------- */
     function initEventListeners(callbacks = {}) {
+        registeredCallbacks = callbacks;
+
         // Show modal
         elements.createQuestBtn?.addEventListener('click', () => toggleQuestFormModal(true));
         // Close modal
@@ -220,12 +195,12 @@ function initUI(elements, stats) {
         elements.clearQuestBtn?.addEventListener('click', () => clearQuestForm());
 
         // Additional external callbacks (complete, delete, filter etc.) can be wired through here
-        if (callbacks.onFilterChange) {
+        if (registeredCallbacks.onFilterChange) {
             elements.typeFilter?.addEventListener('change', () => {
-                callbacks.onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
+                registeredCallbacks.onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
             });
             elements.showCompleted?.addEventListener('change', () => {
-                callbacks.onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
+                registeredCallbacks.onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
             });
         }
 
@@ -238,9 +213,9 @@ function initUI(elements, stats) {
                 if (!card) return;
                 const id = card.dataset.id;
                 if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
+                    registeredCallbacks.onCompleteQuest && registeredCallbacks.onCompleteQuest(id);
                 } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
+                    registeredCallbacks.onDeleteQuest && registeredCallbacks.onDeleteQuest(id);
                 }
             });
         }
