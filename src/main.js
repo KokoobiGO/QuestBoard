@@ -44,7 +44,6 @@ const elements = {
   navActions: document.getElementById('navActions'),
   userInfo: document.getElementById('userInfo'),
   userEmailText: document.getElementById('userEmailText'),
-  logoutBtn: document.getElementById('logoutBtn'),
   bellBtn: document.getElementById('bellBtn'),
   // Stats
   statsContainer: document.getElementById('statsContainer'),
@@ -249,10 +248,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Filters & quest actions (delegated to ui)
   ui.initEventListeners({
-    onFilterChange: (type, showCompleted) => {
+    onFilter: (type, showCompleted) => {
       ui.renderQuests(quests.getQuests(), type, showCompleted);
     },
-    onCompleteQuest: async (questId) => {
+    onComplete: async (questId) => {
       ui.showLoading();
       try {
         const result = await quests.completeQuest(questId);
@@ -270,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.hideLoading();
       }
     },
-    onDeleteQuest: async (questId) => {
+    onDelete: async (questId) => {
       if (!confirm('Are you sure you want to delete this quest?')) return;
       ui.showLoading();
       try {

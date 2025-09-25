@@ -103,7 +103,7 @@ function initUI(elements, stats) {
     function clearQuestForm() {
         elements.questTitle.value = '';
         elements.questDescription.value = '';
-        elements.questType.value = 'Daily';
+        elements.questType.value = 'daily';
         elements.questDueDate.value = '';
     }
 
@@ -180,12 +180,13 @@ function initUI(elements, stats) {
             elements.questsContainer.appendChild(questCard);
         });
     }
+    
     /* ------------------------------------------------------------------
-     * Event-listener/* ------------------------------------------------------------------
      * Event-listener initialisation hooks
      * ---------------------------------------------------------------- */
     function initEventListeners(callbacks = {}) {
-
+        // Store callbacks for later use
+        registeredCallbacks = callbacks;
 
         // Show modal
         elements.createQuestBtn?.addEventListener('click', () => toggleQuestFormModal(true));
@@ -193,11 +194,6 @@ function initUI(elements, stats) {
         elements.closeModal?.addEventListener('click', () => toggleQuestFormModal(false));
         // Clear quest form
         elements.clearQuestBtn?.addEventListener('click', () => clearQuestForm());
-
-        // Additional external callbacks (complete, delete, filter etc.) can be wired through here
-
-            });
-        }
 
         // Delegated quest actions
         if (elements.questsContainer) {
@@ -207,9 +203,25 @@ function initUI(elements, stats) {
                 const card = e.target.closest('.quest-item');
                 if (!card) return;
                 const id = card.dataset.id;
-                if (target.classList.contains('complete-btn')) {
-
+                
+                if (target.classList.contains('complete-btn') && callbacks.onComplete) {
+                    callbacks.onComplete(id);
+                } else if (target.classList.contains('delete-btn') && callbacks.onDelete) {
+                    callbacks.onDelete(id);
                 }
+            });
+        }
+
+        // Filter and show completed checkbox listeners
+        if (elements.typeFilter && callbacks.onFilter) {
+            elements.typeFilter.addEventListener('change', (e) => {
+                callbacks.onFilter(e.target.value, elements.showCompleted?.checked || false);
+            });
+        }
+
+        if (elements.showCompleted && callbacks.onFilter) {
+            elements.showCompleted.addEventListener('change', (e) => {
+                callbacks.onFilter(elements.typeFilter?.value || 'all', e.target.checked);
             });
         }
     }

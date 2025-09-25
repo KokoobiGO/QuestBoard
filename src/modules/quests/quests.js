@@ -81,10 +81,35 @@ function initQuests(supabase, stats) {
                 return { success: true, quest, rewards: { xp: 0, coins: 0 } };
             }
 
+            // Calculate rewards based on quest type
+            let xpReward = 10; // base XP
+            let coinReward = 5; // base coins
+            
+            switch (quest.type) {
+                case 'daily':
+                    xpReward = 15;
+                    coinReward = 8;
+                    break;
+                case 'weekly':
+                    xpReward = 50;
+                    coinReward = 25;
+                    break;
+                case 'one_time':
+                    xpReward = 25;
+                    coinReward = 15;
+                    break;
+                default:
+                    xpReward = 10;
+                    coinReward = 5;
+            }
+
+            // Update quest in database
             const { error } = await supabase
                 .from('quests')
+                .update({ completed: true })
+                .eq('id', questId);
 
-            }
+            if (error) throw error;
 
             const updatedQuest = { ...quest, completed: true };
             quests = quests.map(q => (q.id === questId ? updatedQuest : q));
