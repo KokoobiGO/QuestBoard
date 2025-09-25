@@ -91,22 +91,6 @@ function initUI(elements, stats) {
         } else {
             elements.userInfo.classList.add('hidden');
         }
-
-        // Delegated quest actions
-        if (elements.questsContainer) {
-            elements.questsContainer.addEventListener('click', (e) => {
-                const target = e.target.closest('button');
-                if (!target) return;
-                const card = e.target.closest('.quest-item');
-                if (!card) return;
-                const id = card.dataset.id;
-                if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
-                } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
-                }
-            });
-        }
     }
 
     /* ------------------------------------------------------------------
@@ -135,21 +119,6 @@ function initUI(elements, stats) {
             });
         }
 
-        // Delegated quest actions
-        if (elements.questsContainer) {
-            elements.questsContainer.addEventListener('click', (e) => {
-                const target = e.target.closest('button');
-                if (!target) return;
-                const card = e.target.closest('.quest-item');
-                if (!card) return;
-                const id = card.dataset.id;
-                if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
-                } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
-                }
-            });
-        }
     }
 
     /* ------------------------------------------------------------------
@@ -212,6 +181,8 @@ function initUI(elements, stats) {
      * Event-listener initialisation hooks
      * ---------------------------------------------------------------- */
     function initEventListeners(callbacks = {}) {
+        const { onFilterChange, onCompleteQuest, onDeleteQuest } = callbacks;
+
         // Show modal
         elements.createQuestBtn?.addEventListener('click', () => toggleQuestFormModal(true));
         // Close modal
@@ -220,12 +191,12 @@ function initUI(elements, stats) {
         elements.clearQuestBtn?.addEventListener('click', () => clearQuestForm());
 
         // Additional external callbacks (complete, delete, filter etc.) can be wired through here
-        if (callbacks.onFilterChange) {
+        if (onFilterChange) {
             elements.typeFilter?.addEventListener('change', () => {
-                callbacks.onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
+                onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
             });
             elements.showCompleted?.addEventListener('change', () => {
-                callbacks.onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
+                onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
             });
         }
 
@@ -238,9 +209,9 @@ function initUI(elements, stats) {
                 if (!card) return;
                 const id = card.dataset.id;
                 if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
+                    onCompleteQuest && onCompleteQuest(id);
                 } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
+                    onDeleteQuest && onDeleteQuest(id);
                 }
             });
         }

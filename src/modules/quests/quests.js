@@ -71,68 +71,69 @@ function initQuests(supabase, stats) {
     // Complete a quest
     async function completeQuest(questId) {
         try {
-            const { data, error } = await supabase
-                .from('quests')
-                .update({ completed: true, completed_at: new Date().toISOString() })
-                .eq('id', questId)
-                .select();
-            
-            if (error) throw error;
-            
-            if (data && data.length > 0) {
-                // Update local quests array
-                quests = quests.map(q => q.id === questId ? { ...q, completed: true, completed_at: new Date().toISOString() } : q);
-                
-                // Award XP and coins based on quest type
-                const quest = data[0];
-                let xpReward = 0;
-                let coinReward = 0;
-                
-                switch (quest.type) {
-                    case 'daily':
-                        xpReward = 10;
-                        coinReward = 1;
-                        break;
-                    case 'weekly':
-                        xpReward = 50;
-                        coinReward = 5;
-                        break;
-                    case 'one_time':
-                        xpReward = 25;
-                        coinReward = 3;
-                        break;
-                    default:
-                        xpReward = 5;
-                        coinReward = 1;
-                }
-                
-                // Update user stats
-                stats.addXp(xpReward);
-                stats.addCoins(coinReward);
-                
-                // Update user_stats in database
-                const userStats = stats.getUserStats();
-                const { error: statsError } = await supabase
-                    .from('user_stats')
-                    .update({ 
-                        xp: userStats.xp, 
-                        coins: userStats.coins, 
-                        level: userStats.level 
-                    })
-                    .eq('user_id', quest.user_id);
-                
-                if (statsError) {
-                    console.error('Error updating stats:', statsError);
-                }
-                
-                return { 
-                    success: true, 
-                    quest: data[0],
-                    rewards: { xp: xpReward, coins: coinReward }
-                };
+            const quest = quests.find(q => q.id === questId);
+
+            if (!quest) {
+                return { success: false, error: 'Quest not found' };
             }
-            
-            return { success: false, error: 'No data returned' };
+
+            if (quest.completed) {
+                return { success: true, quest, rewards: { xp: 0, coins: 0 } };
+            }
+
+            const { error } = await supabase
+                .from('quests')
+                .update({ completed: true }, { returning: 'minimal' })
+                .eq('id', questId);
+
+            if (error) throw error;
+
+            const normalizedType = (quest.type || '').toLowerCase();
+            let xpReward = 0;
+            let coinReward = 0;
+
+            switch (normalizedType) {
+                case 'daily':
+                    xpReward = 10;
+                    coinReward = 1;
+                    break;
+                case 'weekly':
+                    xpReward = 50;
+                    coinReward = 5;
+                    break;
+                case 'one_time':
+                    xpReward = 25;
+                    coinReward = 3;
+                    break;
+                default:
+                    xpReward = 5;
+                    coinReward = 1;
+            }
+
+            const updatedQuest = { ...quest, completed: true };
+            quests = quests.map(q => (q.id === questId ? updatedQuest : q));
+
+            stats.addXp(xpReward);
+            stats.addCoins(coinReward);
+
+            const userStats = stats.getUserStats();
+            const { error: statsError } = await supabase
+                .from('user_stats')
+                .update({
+                    xp: userStats.xp,
+                    coins: userStats.coins
+                })
+                .eq('user_id', quest.user_id);
+
+            if (statsError) {
+                console.error('Error updating stats:', statsError);
+            }
+
+            return {
+                success: true,
+                quest: updatedQuest,
+                rewards: { xp: xpReward, coins: coinReward }
+            };
         } catch (error) {
             console.error('Error completing quest:', error);
             return { success: false, error: error.message };

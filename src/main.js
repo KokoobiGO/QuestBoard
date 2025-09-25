@@ -92,7 +92,7 @@ async function getOrInitUserStats(userId) {
 
   const { data: inserted, error: upsertError } = await supabase
     .from('user_stats')
-    .upsert({ user_id: userId, xp: 0, coins: 0, level: 1 }, { onConflict: 'user_id' })
+    .upsert({ user_id: userId, xp: 0, coins: 0 }, { onConflict: 'user_id' })
     .select('*')
     .single();
 
@@ -112,8 +112,7 @@ async function initApp() {
       const userStats = await getOrInitUserStats(user.id);
       statsModule.updateUserStats({
         xp: userStats.xp ?? 0,
-        coins: userStats.coins ?? 0,
-        level: userStats.level ?? 1
+        coins: userStats.coins ?? 0
       });
 
       ui.updateStatsDisplay();
@@ -170,8 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const userStats = await getOrInitUserStats(result.user.id);
         statsModule.updateUserStats({
           xp: userStats.xp ?? 0,
-          coins: userStats.coins ?? 0,
-          level: userStats.level ?? 1
+          coins: userStats.coins ?? 0
         });
 
         await quests.fetchQuests(result.user.id);
