@@ -91,7 +91,11 @@ function initQuests(supabase, stats) {
 
             if (error) throw error;
 
-            const persistedQuest = data ? { ...quest, ...data } : { ...quest, completed: true };
+            if (!data) {
+                return { success: false, error: 'Quest completion failed' };
+            }
+
+            const persistedQuest = { ...quest, ...data };
             const normalizedType = (persistedQuest.type || quest.type || '').toLowerCase();
             let xpReward = 0;
             let coinReward = 0;
