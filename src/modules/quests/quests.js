@@ -92,7 +92,8 @@ function initQuests(supabase, stats) {
 
             if (error) throw error;
 
-            const normalizedType = (quest.type || '').toLowerCase();
+            const persistedQuest = data ? { ...quest, ...data } : { ...quest, completed: true };
+            const normalizedType = (persistedQuest.type || quest.type || '').toLowerCase();
             let xpReward = 0;
             let coinReward = 0;
 
@@ -114,7 +115,7 @@ function initQuests(supabase, stats) {
                     coinReward = 1;
             }
 
-            const updatedQuest = data ? data : { ...quest, completed: true };
+            const updatedQuest = { ...persistedQuest, completed: true };
             quests = quests.map(q => (q.id === questId ? updatedQuest : q));
 
             stats.addXp(xpReward);
@@ -127,7 +128,7 @@ function initQuests(supabase, stats) {
                     xp: userStats.xp,
                     coins: userStats.coins
                 })
-                .eq('user_id', quest.user_id);
+                .eq('user_id', updatedQuest.user_id || quest.user_id);
 
             if (statsError) {
                 console.error('Error updating stats:', statsError);

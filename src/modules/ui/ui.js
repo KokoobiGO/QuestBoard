@@ -182,7 +182,6 @@ function initUI(elements, stats) {
         });
     }
     /* ------------------------------------------------------------------
-     * Event-listener/* ------------------------------------------------------------------
      * Event-listener initialisation hooks
      * ---------------------------------------------------------------- */
     const listenerState = {
@@ -251,7 +250,7 @@ function initUI(elements, stats) {
 
         // If filters were already set before this call, immediately propagate the
         // latest values to keep the UI and quest list in sync with the newly
-        // registered callbacks.
+        // assigned listenerState callbacks.
         triggerFilterChange();
     }
 
