@@ -7,6 +7,10 @@
  * @returns {Object} - Exposed UI helper functions
  */
 function initUI(elements, stats) {
+    // Keep track of the latest callbacks passed into initEventListeners so
+    // other helpers (like updateUserInfo) can safely reference them.
+    let registeredCallbacks = {};
+
     /* ------------------------------------------------------------------
      * Generic helpers
      * ---------------------------------------------------------------- */
@@ -181,7 +185,7 @@ function initUI(elements, stats) {
      * Event-listener initialisation hooks
      * ---------------------------------------------------------------- */
     function initEventListeners(callbacks = {}) {
-        const { onFilterChange, onCompleteQuest, onDeleteQuest } = callbacks;
+
 
         // Show modal
         elements.createQuestBtn?.addEventListener('click', () => toggleQuestFormModal(true));
@@ -191,12 +195,7 @@ function initUI(elements, stats) {
         elements.clearQuestBtn?.addEventListener('click', () => clearQuestForm());
 
         // Additional external callbacks (complete, delete, filter etc.) can be wired through here
-        if (onFilterChange) {
-            elements.typeFilter?.addEventListener('change', () => {
-                onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
-            });
-            elements.showCompleted?.addEventListener('change', () => {
-                onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
+
             });
         }
 
@@ -209,9 +208,7 @@ function initUI(elements, stats) {
                 if (!card) return;
                 const id = card.dataset.id;
                 if (target.classList.contains('complete-btn')) {
-                    onCompleteQuest && onCompleteQuest(id);
-                } else if (target.classList.contains('delete-btn')) {
-                    onDeleteQuest && onDeleteQuest(id);
+
                 }
             });
         }

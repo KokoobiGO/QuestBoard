@@ -83,31 +83,7 @@ function initQuests(supabase, stats) {
 
             const { error } = await supabase
                 .from('quests')
-                .update({ completed: true }, { returning: 'minimal' })
-                .eq('id', questId);
 
-            if (error) throw error;
-
-            const normalizedType = (quest.type || '').toLowerCase();
-            let xpReward = 0;
-            let coinReward = 0;
-
-            switch (normalizedType) {
-                case 'daily':
-                    xpReward = 10;
-                    coinReward = 1;
-                    break;
-                case 'weekly':
-                    xpReward = 50;
-                    coinReward = 5;
-                    break;
-                case 'one_time':
-                    xpReward = 25;
-                    coinReward = 3;
-                    break;
-                default:
-                    xpReward = 5;
-                    coinReward = 1;
             }
 
             const updatedQuest = { ...quest, completed: true };
