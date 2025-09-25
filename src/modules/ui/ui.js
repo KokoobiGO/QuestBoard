@@ -174,6 +174,23 @@ function initUI(elements, stats) {
     }
     
     /* ------------------------------------------------------------------
+     * Helper functions
+     * ---------------------------------------------------------------- */
+    function iconForType(type) {
+        const normalizedType = (type || '').toLowerCase();
+        switch (normalizedType) {
+            case 'daily':
+                return 'fa-calendar-day';
+            case 'weekly':
+                return 'fa-calendar-week';
+            case 'one_time':
+                return 'fa-star';
+            default:
+                return 'fa-tasks';
+        }
+    }
+
+    /* ------------------------------------------------------------------
      * Event-listener initialisation hooks
      * ---------------------------------------------------------------- */
     function initEventListeners(callbacks = {}) {
