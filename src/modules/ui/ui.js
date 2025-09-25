@@ -7,6 +7,10 @@
  * @returns {Object} - Exposed UI helper functions
  */
 function initUI(elements, stats) {
+    // Keep track of the latest callbacks passed into initEventListeners so
+    // other helpers (like updateUserInfo) can safely reference them.
+    let registeredCallbacks = {};
+
     /* ------------------------------------------------------------------
      * Generic helpers
      * ---------------------------------------------------------------- */
@@ -123,7 +127,6 @@ function initUI(elements, stats) {
                 modal.removeEventListener('transitionend', handler);
             });
         }
-
     }
 
     /* ------------------------------------------------------------------
@@ -151,13 +154,6 @@ function initUI(elements, stats) {
         elements.emptyState.classList.add('hidden');
         elements.questCount.textContent = `${filteredQuests.length} quests`;
 
-        const iconForType = (t) => {
-            const tt = (t || '').toLowerCase();
-            if (tt === 'daily') return 'fa-sun';
-            if (tt === 'weekly') return 'fa-calendar-week';
-            return 'fa-star';
-        };
-
         filteredQuests.forEach(quest => {
             const questCard = document.createElement('div');
             questCard.className = `quest-item ${quest.completed ? 'completed' : ''}`;
@@ -181,6 +177,7 @@ function initUI(elements, stats) {
             elements.questsContainer.appendChild(questCard);
         });
     }
+
     /* ------------------------------------------------------------------
      * Event-listener initialisation hooks
      * ---------------------------------------------------------------- */

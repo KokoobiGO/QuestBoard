@@ -34,7 +34,6 @@ function initQuests(supabase, stats) {
     // Create a new quest
     async function createQuest(questData, userId) {
         try {
-            // Map UI type values (e.g. "Daily", "Weekly", "One-time") to DB-friendly values
             const typeMap = {
                 'Daily': 'daily',
                 'Weekly': 'weekly',
@@ -155,7 +154,6 @@ function initQuests(supabase, stats) {
             
             if (error) throw error;
             
-            // Update local quests array
             quests = quests.filter(q => q.id !== questId);
             
             return { success: true };
