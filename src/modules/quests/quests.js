@@ -73,7 +73,7 @@ function initQuests(supabase, stats) {
         try {
             const { data, error } = await supabase
                 .from('quests')
-                .update({ completed: true, completed_at: new Date().toISOString() })
+                .update({ completed: true })
                 .eq('id', questId)
                 .select();
             
@@ -81,7 +81,7 @@ function initQuests(supabase, stats) {
             
             if (data && data.length > 0) {
                 // Update local quests array
-                quests = quests.map(q => q.id === questId ? { ...q, completed: true, completed_at: new Date().toISOString() } : q);
+                quests = quests.map(q => q.id === questId ? { ...q, completed: true } : q);
                 
                 // Award XP and coins based on quest type
                 const quest = data[0];
@@ -114,10 +114,9 @@ function initQuests(supabase, stats) {
                 const userStats = stats.getUserStats();
                 const { error: statsError } = await supabase
                     .from('user_stats')
-                    .update({ 
-                        xp: userStats.xp, 
-                        coins: userStats.coins, 
-                        level: userStats.level 
+                    .update({
+                        xp: userStats.xp,
+                        coins: userStats.coins
                     })
                     .eq('user_id', quest.user_id);
                 
