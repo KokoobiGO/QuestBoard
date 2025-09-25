@@ -3,6 +3,8 @@
 // Global state
 let quests = [];
 
+const QUEST_COLUMNS = 'id,user_id,title,description,type,due_date,completed,created_at';
+
 /**
  * Initialize quests module
  * @param {Object} supabase - Supabase client instance
@@ -15,7 +17,7 @@ function initQuests(supabase, stats) {
         try {
             const { data, error } = await supabase
                 .from('quests')
-                .select('*')
+                .select(QUEST_COLUMNS)
                 .eq('user_id', userId)
                 .order('created_at', { ascending: false });
             
@@ -32,7 +34,6 @@ function initQuests(supabase, stats) {
     // Create a new quest
     async function createQuest(questData, userId) {
         try {
-            // Map UI type values (e.g. "Daily", "Weekly", "One-time") to DB-friendly values
             const typeMap = {
                 'Daily': 'daily',
                 'Weekly': 'weekly',
@@ -48,11 +49,11 @@ function initQuests(supabase, stats) {
                 completed: false,
                 created_at: new Date().toISOString()
             };
-            
+
             const { data, error } = await supabase
                 .from('quests')
                 .insert([newQuest])
-                .select();
+                .select(QUEST_COLUMNS);
             
             if (error) throw error;
             
@@ -71,67 +72,72 @@ function initQuests(supabase, stats) {
     // Complete a quest
     async function completeQuest(questId) {
         try {
+            const quest = quests.find(q => q.id === questId);
+
+            if (!quest) {
+                return { success: false, error: 'Quest not found' };
+            }
+
+            if (quest.completed) {
+                return { success: true, quest, rewards: { xp: 0, coins: 0 } };
+            }
+
             const { data, error } = await supabase
                 .from('quests')
                 .update({ completed: true })
                 .eq('id', questId)
-                .select();
-            
+                .select(QUEST_COLUMNS)
+                .maybeSingle();
+
             if (error) throw error;
-            
-            if (data && data.length > 0) {
-                // Update local quests array
-                quests = quests.map(q => q.id === questId ? { ...q, completed: true } : q);
-                
-                // Award XP and coins based on quest type
-                const quest = data[0];
-                let xpReward = 0;
-                let coinReward = 0;
-                
-                switch (quest.type) {
-                    case 'daily':
-                        xpReward = 10;
-                        coinReward = 1;
-                        break;
-                    case 'weekly':
-                        xpReward = 50;
-                        coinReward = 5;
-                        break;
-                    case 'one_time':
-                        xpReward = 25;
-                        coinReward = 3;
-                        break;
-                    default:
-                        xpReward = 5;
-                        coinReward = 1;
-                }
-                
-                // Update user stats
-                stats.addXp(xpReward);
-                stats.addCoins(coinReward);
-                
-                // Update user_stats in database
-                const userStats = stats.getUserStats();
-                const { error: statsError } = await supabase
-                    .from('user_stats')
-                    .update({
-                        xp: userStats.xp,
-                        coins: userStats.coins
-                    })
-                    .eq('user_id', quest.user_id);
-                
-                if (statsError) {
-                    console.error('Error updating stats:', statsError);
-                }
-                
-                return { 
-                    success: true, 
-                    quest: data[0],
-                    rewards: { xp: xpReward, coins: coinReward }
-                };
+
+            const persistedQuest = data ? { ...quest, ...data } : { ...quest, completed: true };
+            const normalizedType = (persistedQuest.type || quest.type || '').toLowerCase();
+            let xpReward = 0;
+            let coinReward = 0;
+
+            switch (normalizedType) {
+                case 'daily':
+                    xpReward = 10;
+                    coinReward = 1;
+                    break;
+                case 'weekly':
+                    xpReward = 50;
+                    coinReward = 5;
+                    break;
+                case 'one_time':
+                    xpReward = 25;
+                    coinReward = 3;
+                    break;
+                default:
+                    xpReward = 5;
+                    coinReward = 1;
             }
-            
-            return { success: false, error: 'No data returned' };
+
+            const updatedQuest = { ...persistedQuest, completed: true };
+            quests = quests.map(q => (q.id === questId ? updatedQuest : q));
+
+            stats.addXp(xpReward);
+            stats.addCoins(coinReward);
+
+            const userStats = stats.getUserStats();
+            const { error: statsError } = await supabase
+                .from('user_stats')
+                .update({
+                    xp: userStats.xp,
+                    coins: userStats.coins
+                })
+                .eq('user_id', updatedQuest.user_id || quest.user_id);
+
+            if (statsError) {
+                console.error('Error updating stats:', statsError);
+            }
+
+            return {
+                success: true,
+                quest: updatedQuest,
+                rewards: { xp: xpReward, coins: coinReward }
+            };
         } catch (error) {
             console.error('Error completing quest:', error);
             return { success: false, error: error.message };
@@ -148,7 +154,6 @@ function initQuests(supabase, stats) {
             
             if (error) throw error;
             
-            // Update local quests array
             quests = quests.filter(q => q.id !== questId);
             
             return { success: true };
@@ -165,8 +170,11 @@ function initQuests(supabase, stats) {
 
     // Filter quests by type and completion status
     function filterQuests(type = 'All', showCompleted = false) {
+        const normalizedType = typeof type === 'string' ? type.toLowerCase() : 'all';
+
         return quests.filter(quest => {
-            const typeMatch = type === 'All' || quest.type === type;
+            const questType = (quest.type || '').toLowerCase();
+            const typeMatch = normalizedType === 'all' || questType === normalizedType;
             const completionMatch = showCompleted || !quest.completed;
             return typeMatch && completionMatch;
         });
