@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuestBoard - Track Your Goals</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <span class="brand-text">QuestBoard</span>
+      </div>
+      <div class="nav-actions hidden" id="navActions">
+        <div class="stats-container" id="statsContainer">
+          <div class="stat-item">
+            <i class="fas fa-trophy" aria-hidden="true"></i>
+            <span id="levelCounter">1</span>
+            <small>Level</small>
+          </div>
+          <div class="progress-container" aria-label="XP Progress">
+            <div class="progress-bar" id="xpProgressBar" role="progressbar"
+                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-star" aria-hidden="true"></i>
+            <span id="xpCounter">0</span>
+            <small>XP</small>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-coins" aria-hidden="true"></i>
+            <span id="coinsCounter">0</span>
+            <small>Coins</small>
+          </div>
+        </div>
+
+        <button class="bell-btn" id="bellBtn" aria-label="Notifications">
+          <i class="fas fa-bell" aria-hidden="true"></i>
+          <span class="notification-dot" aria-hidden="true"></span>
+        </button>
+
+              <button id="createQuestBtn" class="btn-primary">
+                <i class="fas fa-plus"></i> Create Quest
+              </button>
+              <button id="logoutBtn" class="btn-secondary">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+
+        <div class="user-info" id="userInfo" class="user-info hidden">
+          <div class="user-email">
+            <i class="fas fa-user" aria-hidden="true"></i>
+            <span id="userEmailText"></span>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main-content">
+    <!-- Auth -->
+    <div class="auth-container" id="authContainer">
+      <div class="auth-form">
+        <div class="auth-header">
+          <div class="auth-icon">
+            <i class="fas fa-sign-in-alt" id="authIcon"></i>
+          </div>
+          <h1 id="authTitle">Welcome Back</h1>
+          <p id="authSubtitle">Sign in to access your quests</p>
+        </div>
+
+        <div class="auth-body">
+          <div class="message hidden" id="authMessage"></div>
+
+          <form id="authForm">
+            <div class="field hidden" id="nameField">
+              <label for="fullName">Full Name</label>
+              <div class="input-container">
+                <i class="fas fa-user" aria-hidden="true"></i>
+                <input type="text" id="fullName" placeholder="Enter your full name"/>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="email">Email Address</label>
+              <div class="input-container">
+                <i class="fas fa-envelope" aria-hidden="true"></i>
+                <input type="email" id="email" placeholder="Enter your email" required/>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="password">Password</label>
+              <div class="input-container">
+                <i class="fas fa-lock" aria-hidden="true"></i>
+                <input type="password" id="password" placeholder="Enter your password" minlength="6" required/>
+              </div>
+              <p class="password-hint" id="passwordHint" class="hidden">Password must be at least 6 characters</p>
+            </div>
+
+            <button type="submit" class="auth-submit-btn" id="authSubmitBtn">
+              <i class="fas fa-sign-in-alt" aria-hidden="true" id="submitIcon"></i>
+              <span id="submitText">Sign In</span>
+            </button>
+
+            <button type="button" class="clear-btn" id="clearBtn">Clear</button>
+          </form>
+
+          <div class="auth-toggle">
+            <p>
+              <span id="toggleText">Don't have an account?</span>
+              <button type="button" class="toggle-btn" id="toggleBtn">Sign up</button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard hidden" id="dashboard">
+      <div class="dashboard-grid">
+        <div class="quests-list-card">
+          <div class="card-header">
+            <div class="list-header">
+              <h2>My Quests</h2>
+              <span class="quest-count" id="questCount">0 quests</span>
+            </div>
+            <div class="filters">
+              <div class="filter-group">
+                <i class="fas fa-filter"></i>
+                <select id="typeFilter">
+                  <option value="all">All Types</option>
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="one_time">One-time</option>
+                </select>
+              </div>
+              <label class="checkbox-label">
+                <input type="checkbox" id="showCompleted" checked/>
+                <span>Show completed</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="message hidden" id="questsMessage"></div>
+            <div class="quests-container" id="questsContainer">
+              <div class="empty-state" id="emptyState">
+                <i class="fas fa-calendar-alt"></i>
+                <p>No quests found</p>
+                <small>Create your first quest to get started!</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Loading -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading...</p>
+    </div>
+  </div>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Quest Form Modal -->
+  <div class="modal" id="questFormModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="header-content">
+          <div class="header-icon"><i class="fas fa-plus-circle"></i></div>
+          <div class="header-text">
+            <h2>Create New Quest</h2>
+            <p>Add a new goal to track your progress</p>
+          </div>
+        </div>
+        <button class="close-modal" id="closeModal" aria-label="Close"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="message hidden" id="questMessage"></div>
+        <form id="questForm">
+          <div class="field">
+            <label for="questTitle">Quest Title *</label>
+            <input type="text" id="questTitle" placeholder="Enter quest title" required/>
+          </div>
+          <div class="field">
+            <label for="questDescription">Description</label>
+            <textarea id="questDescription" rows="3" placeholder="Describe your quest..."></textarea>
+          </div>
+          <div class="field">
+            <label for="questType">Quest Type *</label>
+            <select id="questType" required>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="one_time">One-time</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="questDueDate">Due Date & Time *</label>
+            <input type="datetime-local" id="questDueDate" required/>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="create-btn" id="submitQuestBtn">
+              <i class="fas fa-plus-circle"></i><span>Create Quest</span>
+            </button>
+            <button type="button" class="clear-btn" id="clearQuestBtn">Clear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
