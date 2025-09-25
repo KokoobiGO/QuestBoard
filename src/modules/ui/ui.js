@@ -185,7 +185,7 @@ function initUI(elements, stats) {
      * Event-listener initialisation hooks
      * ---------------------------------------------------------------- */
     function initEventListeners(callbacks = {}) {
-
+        registeredCallbacks = callbacks;
 
         // Show modal
         elements.createQuestBtn?.addEventListener('click', () => toggleQuestFormModal(true));
@@ -195,7 +195,12 @@ function initUI(elements, stats) {
         elements.clearQuestBtn?.addEventListener('click', () => clearQuestForm());
 
         // Additional external callbacks (complete, delete, filter etc.) can be wired through here
-
+        if (registeredCallbacks.onFilterChange) {
+            elements.typeFilter?.addEventListener('change', () => {
+                registeredCallbacks.onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
+            });
+            elements.showCompleted?.addEventListener('change', () => {
+                registeredCallbacks.onFilterChange(elements.typeFilter.value, elements.showCompleted.checked);
             });
         }
 
@@ -208,7 +213,9 @@ function initUI(elements, stats) {
                 if (!card) return;
                 const id = card.dataset.id;
                 if (target.classList.contains('complete-btn')) {
-
+                    registeredCallbacks.onCompleteQuest && registeredCallbacks.onCompleteQuest(id);
+                } else if (target.classList.contains('delete-btn')) {
+                    registeredCallbacks.onDeleteQuest && registeredCallbacks.onDeleteQuest(id);
                 }
             });
         }
