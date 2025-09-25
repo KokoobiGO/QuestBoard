@@ -7,6 +7,7 @@
  * @returns {Object} - Exposed UI helper functions
  */
 function initUI(elements, stats) {
+    let eventCallbacks = {};
     /* ------------------------------------------------------------------
      * Generic helpers
      * ---------------------------------------------------------------- */
@@ -91,22 +92,6 @@ function initUI(elements, stats) {
         } else {
             elements.userInfo.classList.add('hidden');
         }
-
-        // Delegated quest actions
-        if (elements.questsContainer) {
-            elements.questsContainer.addEventListener('click', (e) => {
-                const target = e.target.closest('button');
-                if (!target) return;
-                const card = e.target.closest('.quest-item');
-                if (!card) return;
-                const id = card.dataset.id;
-                if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
-                } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
-                }
-            });
-        }
     }
 
     /* ------------------------------------------------------------------
@@ -135,21 +120,6 @@ function initUI(elements, stats) {
             });
         }
 
-        // Delegated quest actions
-        if (elements.questsContainer) {
-            elements.questsContainer.addEventListener('click', (e) => {
-                const target = e.target.closest('button');
-                if (!target) return;
-                const card = e.target.closest('.quest-item');
-                if (!card) return;
-                const id = card.dataset.id;
-                if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
-                } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
-                }
-            });
-        }
     }
 
     /* ------------------------------------------------------------------
@@ -212,6 +182,7 @@ function initUI(elements, stats) {
      * Event-listener initialisation hooks
      * ---------------------------------------------------------------- */
     function initEventListeners(callbacks = {}) {
+        eventCallbacks = callbacks;
         // Show modal
         elements.createQuestBtn?.addEventListener('click', () => toggleQuestFormModal(true));
         // Close modal
@@ -238,9 +209,9 @@ function initUI(elements, stats) {
                 if (!card) return;
                 const id = card.dataset.id;
                 if (target.classList.contains('complete-btn')) {
-                    callbacks.onCompleteQuest && callbacks.onCompleteQuest(id);
+                    eventCallbacks.onCompleteQuest && eventCallbacks.onCompleteQuest(id);
                 } else if (target.classList.contains('delete-btn')) {
-                    callbacks.onDeleteQuest && callbacks.onDeleteQuest(id);
+                    eventCallbacks.onDeleteQuest && eventCallbacks.onDeleteQuest(id);
                 }
             });
         }
