@@ -54,9 +54,9 @@ When you complete quests, you earn:
 - **Level Up**: Progress through levels as you gain XP
 
 ### 6. Quest Types
-- **📅 Daily**: Recurring tasks that reset each day
-- **📆 Weekly**: Tasks that reset weekly
-- **⭐ One-time**: Single completion tasks
+- **Daily**: Recurring tasks that reset each day
+- **Weekly**: Tasks that reset weekly
+- **One-time**: Single completion tasks
 
 ## Getting Started
 
@@ -80,15 +80,6 @@ When you complete quests, you earn:
 - **Icons**: FontAwesome
 - **Server**: http-server for development
 
-## Features
-
-- ✅ User authentication
-- ✅ Quest creation and management
-- ✅ XP and leveling system
-- ✅ Quest filtering and sorting
-- ✅ Responsive design
-- ✅ Real-time updates
-
 ---
 
-Start your quest journey today and gamify your productivity! 🎮✨
+Start your quest journey today and gamify your productivity!

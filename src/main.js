@@ -3,6 +3,7 @@
 import { initAuth } from './modules/auth/auth.js';
 import { initQuests } from './modules/quests/quests.js';
 import { initUI } from './modules/ui/ui.js';
+import { initBadges } from './modules/badges/badges.js';
 import * as statsModule from './modules/stats/stats.js';
 
 // ---- Supabase ----
@@ -45,6 +46,10 @@ const elements = {
   userInfo: document.getElementById('userInfo'),
   userEmailText: document.getElementById('userEmailText'),
   bellBtn: document.getElementById('bellBtn'),
+  profileBtn: document.getElementById('profileBtn'),
+  // Profile page
+  profilePage: document.getElementById('profilePage'),
+  backToMainBtn: document.getElementById('backToMainBtn'),
   // Stats
   statsContainer: document.getElementById('statsContainer'),
   xpCounter: document.getElementById('xpCounter'),
@@ -77,6 +82,7 @@ const elements = {
 // ---- Modules ----
 const ui = initUI(elements, statsModule);
 const auth = initAuth(supabase, ui);
+const badges = initBadges(supabase);
 const quests = initQuests(supabase, statsModule);
 
 // ---- Helpers ----
@@ -118,6 +124,12 @@ async function initApp() {
       ui.updateStatsDisplay();
       await ui.updateStreakDisplay(supabase, user.id);
       await quests.fetchQuests(user.id);
+      
+      // Load and display badges
+      const allBadges = await badges.loadBadges();
+      const userBadges = await badges.getUserBadges(user.id);
+      ui.renderBadges(allBadges, userBadges);
+      
       ui.updateUserInfo(user);
       ui.showDashboard();
       ui.renderQuests(quests.getQuests());
@@ -174,6 +186,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         await quests.fetchQuests(result.user.id);
+        
+        // Load and display badges, check for new badges
+        const allBadges = await badges.loadBadges();
+        const userBadges = await badges.getUserBadges(result.user.id);
+        const completedQuestsCount = await badges.getCompletedQuestsCount(result.user.id);
+        const newBadges = await badges.checkAndAwardBadges(result.user.id, statsModule.getUserStats(), completedQuestsCount);
+        
+        // Show notifications for new badges
+        newBadges.forEach(badge => badges.showBadgeNotification(badge));
+        
+        // Refresh badge display if new badges were earned
+        if (newBadges.length > 0) {
+          const updatedUserBadges = await badges.getUserBadges(result.user.id);
+          ui.renderBadges(allBadges, updatedUserBadges);
+        } else {
+          ui.renderBadges(allBadges, userBadges);
+        }
+        
         ui.updateUserInfo(result.user);
         ui.updateStatsDisplay();
         await ui.updateStreakDisplay(supabase, result.user.id);
@@ -263,6 +293,20 @@ document.addEventListener('DOMContentLoaded', () => {
           const user = auth.getCurrentUser();
           if (user) {
             await ui.updateStreakDisplay(supabase, user.id);
+            
+            // Check for new badges after quest completion
+            const completedQuestsCount = await badges.getCompletedQuestsCount(user.id);
+            const newBadges = await badges.checkAndAwardBadges(user.id, statsModule.getUserStats(), completedQuestsCount);
+            
+            // Show notifications for new badges
+            newBadges.forEach(badge => badges.showBadgeNotification(badge));
+            
+            // Update badge display if new badges were earned
+            if (newBadges.length > 0) {
+              const allBadges = await badges.loadBadges();
+              const updatedUserBadges = await badges.getUserBadges(user.id);
+              ui.renderBadges(allBadges, updatedUserBadges);
+            }
           }
           ui.renderQuests(quests.getQuests(), elements.typeFilter.value, elements.showCompleted.checked);
           ui.showQuestMessage(`Quest completed! Earned ${result.rewards.xp} XP and ${result.rewards.coins} coins`);
@@ -294,6 +338,40 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.hideLoading();
       }
     }
+  });
+
+  // Profile button event listeners
+  elements.profileBtn?.addEventListener('click', async () => {
+    const user = auth.getCurrentUser();
+    if (!user) return;
+
+    ui.showLoading();
+    try {
+      // Gather all profile data
+      const userStats = statsModule.getUserStats();
+      const allBadges = await badges.loadBadges();
+      const userBadges = await badges.getUserBadges(user.id);
+      
+      // Get quest counts
+      const questCounts = {
+        total: await badges.getCompletedQuestsCount(user.id),
+        weekly: await badges.getWeeklyCompletedQuestsCount(user.id),
+        daily: quests.getQuests().filter(q => q.completed && q.type === 'daily').length,
+        weeklyType: quests.getQuests().filter(q => q.completed && q.type === 'weekly').length
+      };
+
+      ui.updateProfileData(user, userStats, questCounts, allBadges, userBadges);
+      ui.showProfile();
+    } catch (err) {
+      console.error('Profile load error:', err);
+      ui.showQuestMessage('Failed to load profile', true);
+    } finally {
+      ui.hideLoading();
+    }
+  });
+
+  elements.backToMainBtn?.addEventListener('click', () => {
+    ui.hideProfile();
   });
 });
 

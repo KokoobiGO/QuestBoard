@@ -269,6 +269,122 @@ function initUI(elements, stats) {
     }
 
     /* ------------------------------------------------------------------
+     * Badge helpers
+     * ---------------------------------------------------------------- */
+    function renderBadges(allBadges, userBadges) {
+        const badgesContainer = document.getElementById('badgesContainer');
+        if (!badgesContainer) return;
+
+        const earnedBadgeIds = userBadges.map(ub => ub.badge_id || ub.badges?.id);
+        
+        badgesContainer.innerHTML = `
+            <div class="badges-header">
+                <i class="fas fa-trophy"></i>
+                <h3>Badges</h3>
+                <span class="badges-count">${userBadges.length}/${allBadges.length}</span>
+            </div>
+            <div class="badges-grid">
+                ${allBadges.map(badge => {
+                    const isEarned = earnedBadgeIds.includes(badge.id);
+                    const earnedBadge = userBadges.find(ub => 
+                        (ub.badge_id || ub.badges?.id) === badge.id
+                    );
+                    
+                    return `
+                        <div class="badge-item ${isEarned ? 'earned' : 'locked'}">
+                            <i class="${badge.icon} badge-icon"></i>
+                            <div class="badge-name">${badge.name}</div>
+                            <div class="badge-description">${badge.description}</div>
+                            ${!isEarned ? `<div class="badge-requirement">Requirement: ${badge.requirement}</div>` : ''}
+                            ${isEarned && earnedBadge ? `<div class="badge-requirement">Earned: ${new Date(earnedBadge.earned_at).toLocaleDateString()}</div>` : ''}
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    function updateBadgeCount(count, total) {
+        const badgeCount = document.querySelector('.badges-count');
+        if (badgeCount) {
+            badgeCount.textContent = `${count}/${total}`;
+        }
+    }
+
+    /* ------------------------------------------------------------------
+     * Profile page functions
+     * ---------------------------------------------------------------- */
+    function showProfile() {
+        elements.dashboard?.classList.add('hidden');
+        elements.profilePage?.classList.remove('hidden');
+    }
+
+    function hideProfile() {
+        elements.profilePage?.classList.add('hidden');
+        elements.dashboard?.classList.remove('hidden');
+    }
+
+    function updateProfileData(user, userStats, questCounts, allBadges, userBadges) {
+        // Update user info
+        const profileEmail = document.getElementById('profileEmail');
+        const profileMemberSince = document.getElementById('profileMemberSince');
+        
+        if (profileEmail) profileEmail.textContent = user.email || 'N/A';
+        if (profileMemberSince) {
+            const memberSince = new Date(user.created_at || Date.now()).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long'
+            });
+            profileMemberSince.textContent = memberSince;
+        }
+
+        // Update stats
+        const profileLevel = document.getElementById('profileLevel');
+        const profileXP = document.getElementById('profileXP');
+        const profileCoins = document.getElementById('profileCoins');
+        const profileStreak = document.getElementById('profileStreak');
+
+        if (profileLevel) profileLevel.textContent = userStats.level || 1;
+        if (profileXP) profileXP.textContent = userStats.xp || 0;
+        if (profileCoins) profileCoins.textContent = userStats.coins || 0;
+        if (profileStreak) profileStreak.textContent = userStats.currentStreak || 0;
+
+        // Update quest progress
+        const profileTotalQuests = document.getElementById('profileTotalQuests');
+        const profileWeeklyQuests = document.getElementById('profileWeeklyQuests');
+        const profileDailyQuests = document.getElementById('profileDailyQuests');
+        const profileWeeklyQuestType = document.getElementById('profileWeeklyQuestType');
+
+        if (profileTotalQuests) profileTotalQuests.textContent = questCounts.total || 0;
+        if (profileWeeklyQuests) profileWeeklyQuests.textContent = questCounts.weekly || 0;
+        if (profileDailyQuests) profileDailyQuests.textContent = questCounts.daily || 0;
+        if (profileWeeklyQuestType) profileWeeklyQuestType.textContent = questCounts.weeklyType || 0;
+
+        // Update badges
+        renderProfileBadges(allBadges, userBadges);
+    }
+
+    function renderProfileBadges(allBadges, userBadges) {
+        const profileBadgesContainer = document.getElementById('profileBadges');
+        if (!profileBadgesContainer) return;
+
+        const userBadgeIds = new Set(userBadges.map(badge => badge.badge_id));
+
+        profileBadgesContainer.innerHTML = allBadges.map(badge => {
+            const isEarned = userBadgeIds.has(badge.id);
+            return `
+                <div class="profile-badge ${isEarned ? 'earned' : ''}">
+                    <div class="profile-badge-icon">
+                        <i class="${badge.icon}"></i>
+                    </div>
+                    <div class="profile-badge-name">${badge.name}</div>
+                    <div class="profile-badge-description">${badge.description}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    /* ------------------------------------------------------------------
      * Public API
      * ---------------------------------------------------------------- */
     return {
@@ -284,7 +400,12 @@ function initUI(elements, stats) {
         clearQuestForm,
         toggleQuestFormModal,
         renderQuests,
-        initEventListeners
+        renderBadges,
+        updateBadgeCount,
+        initEventListeners,
+        showProfile,
+        hideProfile,
+        updateProfileData
     };
 }
 

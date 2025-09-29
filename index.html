@@ -47,6 +47,10 @@
           <span class="notification-dot" aria-hidden="true"></span>
         </button>
 
+        <button class="bell-btn" id="profileBtn" aria-label="Profile">
+          <i class="fas fa-user" aria-hidden="true"></i>
+        </button>
+
               <button id="createQuestBtn" class="btn-primary">
                 <i class="fas fa-plus"></i> Create Quest
               </button>
@@ -162,6 +166,11 @@
             </div>
           </div>
         </div>
+
+        <!-- Badges Section -->
+        <div class="badges-container" id="badgesContainer">
+          <!-- Badges will be rendered here by JavaScript -->
+        </div>
       </div>
     </div>
   </main>
@@ -221,6 +230,101 @@
             <button type="button" class="clear-btn" id="clearQuestBtn">Clear</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Page -->
+  <div class="profile-page hidden" id="profilePage">
+    <div class="profile-container">
+      <div class="profile-header">
+        <button class="back-btn" id="backToMainBtn">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </button>
+        <h1>User Profile</h1>
+      </div>
+
+      <div class="profile-content">
+        <!-- User Info Section -->
+        <div class="profile-section">
+          <h2><i class="fas fa-user"></i> User Information</h2>
+          <div class="profile-info">
+            <div class="info-item">
+              <span class="label">Email:</span>
+              <span class="value" id="profileEmail">user@example.com</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Member Since:</span>
+              <span class="value" id="profileMemberSince">January 2024</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="profile-section">
+          <h2><i class="fas fa-chart-bar"></i> Statistics</h2>
+          <div class="profile-stats">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+              <div class="stat-info">
+                <span class="stat-value" id="profileLevel">1</span>
+                <span class="stat-label">Level</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-star"></i></div>
+              <div class="stat-info">
+                <span class="stat-value" id="profileXP">0</span>
+                <span class="stat-label">Total XP</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-coins"></i></div>
+              <div class="stat-info">
+                <span class="stat-value" id="profileCoins">0</span>
+                <span class="stat-label">Coins</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-fire"></i></div>
+              <div class="stat-info">
+                <span class="stat-value" id="profileStreak">0</span>
+                <span class="stat-label">Current Streak</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quest Progress Section -->
+        <div class="profile-section">
+          <h2><i class="fas fa-tasks"></i> Quest Progress</h2>
+          <div class="quest-progress">
+            <div class="progress-item">
+              <span class="progress-label">Total Completed:</span>
+              <span class="progress-value" id="profileTotalQuests">0</span>
+            </div>
+            <div class="progress-item">
+              <span class="progress-label">This Week:</span>
+              <span class="progress-value" id="profileWeeklyQuests">0</span>
+            </div>
+            <div class="progress-item">
+              <span class="progress-label">Daily Quests:</span>
+              <span class="progress-value" id="profileDailyQuests">0</span>
+            </div>
+            <div class="progress-item">
+              <span class="progress-label">Weekly Quests:</span>
+              <span class="progress-value" id="profileWeeklyQuestType">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges Section -->
+        <div class="profile-section">
+          <h2><i class="fas fa-medal"></i> Badges</h2>
+          <div class="profile-badges" id="profileBadges">
+            <!-- Badges will be populated dynamically -->
+          </div>
+        </div>
       </div>
     </div>
   </div>
