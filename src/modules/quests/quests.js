@@ -12,6 +12,75 @@ const QUEST_COLUMNS = 'id,user_id,title,description,type,due_date,completed,crea
  * @returns {Object} - Quests module methods
  */
 function initQuests(supabase, stats) {
+    // Update streak when quest is completed
+    async function updateQuestStreak(userId) {
+        try {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            
+            // Get current user stats
+            const { data: userStats, error: fetchError } = await supabase
+                .from('user_stats')
+                .select('current_streak, longest_streak, last_activity_date')
+                .eq('user_id', userId)
+                .single();
+            
+            if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 = no rows found
+                console.error('Error fetching user stats for quest streak:', fetchError);
+                return;
+            }
+            
+            // Only update if this is the first quest completed today
+            if (userStats?.last_activity_date === today) {
+                // Already completed a quest today, no need to update streak
+                return;
+            }
+            
+            let newStreak = 1;
+            let newLongestStreak = userStats?.longest_streak || 1;
+            
+            if (userStats?.last_activity_date) {
+                const lastActivity = new Date(userStats.last_activity_date);
+                const todayDate = new Date(today);
+                const diffTime = todayDate - lastActivity;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 1) {
+                    // Consecutive day, increment streak
+                    newStreak = (userStats.current_streak || 0) + 1;
+                } else if (diffDays > 1) {
+                    // Streak broken, reset to 1
+                    newStreak = 1;
+                } else {
+                    // Same day, maintain current streak
+                    newStreak = userStats.current_streak || 1;
+                }
+            }
+            
+            // Update longest streak if current streak is higher
+            if (newStreak > newLongestStreak) {
+                newLongestStreak = newStreak;
+            }
+            
+            // Update user stats with new streak data
+            const { error: updateError } = await supabase
+                .from('user_stats')
+                .upsert({
+                    user_id: userId,
+                    current_streak: newStreak,
+                    longest_streak: newLongestStreak,
+                    last_activity_date: today
+                }, {
+                    onConflict: 'user_id'
+                });
+            
+            if (updateError) {
+                console.error('Error updating quest streak:', updateError);
+            }
+        } catch (e) {
+            console.error('Error in updateQuestStreak:', e);
+        }
+    }
+
     // Fetch quests for current user
     async function fetchQuests(userId) {
         try {
@@ -119,6 +188,10 @@ function initQuests(supabase, stats) {
             stats.addCoins(coinReward);
 
             const userStats = stats.getUserStats();
+            
+            // Update streak when quest is completed
+            await updateQuestStreak(updatedQuest.user_id || quest.user_id);
+            
             const { error: statsError } = await supabase
                 .from('user_stats')
                 .update({

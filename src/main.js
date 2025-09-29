@@ -51,6 +51,7 @@ const elements = {
   coinsCounter: document.getElementById('coinsCounter'),
   levelCounter: document.getElementById('levelCounter'),
   xpProgressBar: document.getElementById('xpProgressBar'),
+  streakCounter: document.getElementById('streakCounter'),
   // Dashboard
   dashboard: document.getElementById('dashboard'),
   // Quest modal & form
@@ -115,6 +116,7 @@ async function initApp() {
       });
 
       ui.updateStatsDisplay();
+      await ui.updateStreakDisplay(supabase, user.id);
       await quests.fetchQuests(user.id);
       ui.updateUserInfo(user);
       ui.showDashboard();
@@ -174,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await quests.fetchQuests(result.user.id);
         ui.updateUserInfo(result.user);
         ui.updateStatsDisplay();
+        await ui.updateStreakDisplay(supabase, result.user.id);
         ui.showDashboard();
         ui.renderQuests(quests.getQuests());
       } else {
@@ -257,6 +260,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await quests.completeQuest(questId);
         if (result.success) {
           ui.updateStatsDisplay();
+          const user = auth.getCurrentUser();
+          if (user) {
+            await ui.updateStreakDisplay(supabase, user.id);
+          }
           ui.renderQuests(quests.getQuests(), elements.typeFilter.value, elements.showCompleted.checked);
           ui.showQuestMessage(`Quest completed! Earned ${result.rewards.xp} XP and ${result.rewards.coins} coins`);
         } else {

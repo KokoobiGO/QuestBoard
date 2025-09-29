@@ -88,6 +88,39 @@ function initUI(elements, stats) {
         elements.statsContainer?.classList.remove('hidden');
     }
 
+    async function updateStreakDisplay(supabase, userId) {
+        if (!supabase || !userId || !elements.streakCounter) return;
+        
+        try {
+            const { data: userStats, error } = await supabase
+                .from('user_stats')
+                .select('current_streak')
+                .eq('user_id', userId)
+                .single();
+            
+            if (error && error.code !== 'PGRST116') {
+                console.error('Error fetching streak:', error);
+                return;
+            }
+            
+            const currentStreak = userStats?.current_streak || 0;
+            elements.streakCounter.textContent = currentStreak;
+            
+            // Add visual effects for streak milestones
+            const streakItem = elements.streakCounter.closest('.streak-item');
+            if (streakItem) {
+                streakItem.classList.remove('streak-milestone', 'streak-fire');
+                if (currentStreak >= 7) {
+                    streakItem.classList.add('streak-fire');
+                } else if (currentStreak >= 3) {
+                    streakItem.classList.add('streak-milestone');
+                }
+            }
+        } catch (e) {
+            console.error('Error in updateStreakDisplay:', e);
+        }
+    }
+
     function updateUserInfo(user) {
         if (user) {
             elements.userInfo.classList.remove('hidden');
@@ -164,7 +197,7 @@ function initUI(elements, stats) {
                 </div>
                 <div class="quest-description">${quest.description || ''}</div>
                 <div class="quest-actions">
-                    ${quest.completed ? '' : '<button class="quest-btn complete-btn" aria-label="Complete"><i class="fas fa-check"></i></button>'}
+                    ${quest.completed ? '' : '<button class="quest-btn complete-btn" aria-label="Complete Quest">Complete Quest</button>'}
                     <button class="quest-btn delete-btn" aria-label="Delete"><i class="fas fa-trash"></i></button>
                     <span class="due-date"><i class="fas fa-clock"></i> ${due}</span>
                 </div>
@@ -246,6 +279,7 @@ function initUI(elements, stats) {
         showAuthMessage,
         showQuestMessage,
         updateStatsDisplay,
+        updateStreakDisplay,
         updateUserInfo,
         clearQuestForm,
         toggleQuestFormModal,

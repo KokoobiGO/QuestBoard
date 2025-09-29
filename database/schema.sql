@@ -17,6 +17,9 @@ CREATE TABLE IF NOT EXISTS public.user_stats (
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
     xp INTEGER DEFAULT 0 NOT NULL,
     coins INTEGER DEFAULT 0 NOT NULL,
+    current_streak INTEGER DEFAULT 0 NOT NULL,
+    longest_streak INTEGER DEFAULT 0 NOT NULL,
+    last_activity_date DATE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
