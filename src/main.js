@@ -85,6 +85,79 @@ const auth = initAuth(supabase, ui);
 const badges = initBadges(supabase);
 const quests = initQuests(supabase, statsModule);
 
+// ---- Routing ----
+const router = {
+  currentRoute: '/',
+  
+  navigate(path) {
+    if (this.currentRoute === path) return;
+    
+    this.currentRoute = path;
+    window.history.pushState({ path }, '', path);
+    this.handleRoute(path);
+  },
+  
+  handleRoute(path) {
+    const user = auth.getCurrentUser();
+    if (!user) {
+      // If not authenticated, always show auth
+      ui.showAuth();
+      return;
+    }
+    
+    switch (path) {
+      case '/profile':
+        this.showProfilePage();
+        break;
+      case '/':
+      default:
+        this.showDashboard();
+        break;
+    }
+  },
+  
+  async showProfilePage() {
+    const user = auth.getCurrentUser();
+    if (!user) return;
+
+    ui.showLoading();
+    try {
+      // Gather all profile data
+      const userStats = statsModule.getUserStats();
+      const allBadges = await badges.loadBadges();
+      const userBadges = await badges.getUserBadges(user.id);
+      
+      // Get quest counts
+      const questCounts = {
+        total: await badges.getCompletedQuestsCount(user.id),
+        weekly: await badges.getWeeklyCompletedQuestsCount(user.id),
+        daily: quests.getQuests().filter(q => q.completed && q.type === 'daily').length,
+        weeklyType: quests.getQuests().filter(q => q.completed && q.type === 'weekly').length
+      };
+
+      ui.updateProfileData(user, userStats, questCounts, allBadges, userBadges);
+      ui.showProfile();
+    } catch (err) {
+      console.error('Profile load error:', err);
+      ui.showQuestMessage('Failed to load profile', true);
+    } finally {
+      ui.hideLoading();
+    }
+  },
+  
+  showDashboard() {
+    ui.hideProfile();
+    ui.showDashboard();
+  }
+};
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', (event) => {
+  const path = event.state?.path || window.location.pathname;
+  router.currentRoute = path;
+  router.handleRoute(path);
+});
+
 // ---- Helpers ----
 async function getOrInitUserStats(userId) {
   const { data, error } = await supabase
@@ -131,7 +204,12 @@ async function initApp() {
       ui.renderBadges(allBadges, userBadges);
       
       ui.updateUserInfo(user);
-      ui.showDashboard();
+      
+      // Handle initial route
+      const currentPath = window.location.pathname;
+      router.currentRoute = currentPath;
+      router.handleRoute(currentPath);
+      
       ui.renderQuests(quests.getQuests());
     }
   } catch (e) {
@@ -341,37 +419,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Profile button event listeners
-  elements.profileBtn?.addEventListener('click', async () => {
-    const user = auth.getCurrentUser();
-    if (!user) return;
-
-    ui.showLoading();
-    try {
-      // Gather all profile data
-      const userStats = statsModule.getUserStats();
-      const allBadges = await badges.loadBadges();
-      const userBadges = await badges.getUserBadges(user.id);
-      
-      // Get quest counts
-      const questCounts = {
-        total: await badges.getCompletedQuestsCount(user.id),
-        weekly: await badges.getWeeklyCompletedQuestsCount(user.id),
-        daily: quests.getQuests().filter(q => q.completed && q.type === 'daily').length,
-        weeklyType: quests.getQuests().filter(q => q.completed && q.type === 'weekly').length
-      };
-
-      ui.updateProfileData(user, userStats, questCounts, allBadges, userBadges);
-      ui.showProfile();
-    } catch (err) {
-      console.error('Profile load error:', err);
-      ui.showQuestMessage('Failed to load profile', true);
-    } finally {
-      ui.hideLoading();
-    }
+  elements.profileBtn?.addEventListener('click', () => {
+    router.navigate('/profile');
   });
 
   elements.backToMainBtn?.addEventListener('click', () => {
-    ui.hideProfile();
+    router.navigate('/');
   });
 });
 
