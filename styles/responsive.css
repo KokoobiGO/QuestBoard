@@ -1,0 +1,180 @@
+/* RESPONSIVE DESIGN - Makes the app work great on phones and tablets! */
+
+/* When the screen is smaller than 768 pixels wide (like on phones) */
+@media (max-width: 768px) {
+    
+    /*  DASHBOARD GRID - The main layout on small screens */
+    
+    /* Make the dashboard stack in one column instead of multiple columns */
+    .dashboard-grid {
+        grid-template-columns: 1fr;        /* Just one column that takes full width */
+        gap: 1rem;                         /* Less space between items */
+    }
+    
+    /*  NAVIGATION - Top bar adjustments for phones */
+    
+    /* Navigation container gets smaller padding */
+    .nav-container {
+        padding: 0.5rem 1rem;              /* Less space inside the nav bar */
+    }
+    
+    /* Navigation actions (buttons and stuff) stack better */
+    .nav-actions {
+        gap: 0.5rem;                       /* Less space between nav items */
+    }
+    
+    /* Right side navigation buttons get smaller */
+    .nav-buttons-right {
+        gap: 0.25rem;                      /* Very little space between buttons */
+    }
+    
+    /* Profile text gets hidden on small screens to save space */
+    .profile-text {
+        display: none;                     /* Hide the profile text completely */
+    }
+    
+    /* STATS AND PROGRESS - Number displays for phones */
+    
+    /* Stats container stacks in one column */
+    .stats-container {
+        grid-template-columns: 1fr;        /* Just one column */
+        gap: 0.5rem;                       /* Less space between stats */
+    }
+    
+    /* Progress container also stacks in one column */
+    .progress-container {
+        grid-template-columns: 1fr;        /* Just one column */
+        gap: 0.5rem;                       /* Less space between progress items */
+    }
+    
+    /* MAIN CONTENT - The main area of the app */
+    
+    /* Main content gets less padding on phones */
+    .main-content {
+        padding: 1rem;                     /* Less space around the content */
+    }
+    
+    /* QUEST FORMS - Where you create new quests */
+    
+    /* Quest form container gets less padding */
+    .quest-form-container {
+        padding: 1rem;                     /* Less space inside the form */
+    }
+    
+    /*  QUEST LIST - Where all your quests are shown */
+    
+    /* Quests container gets less padding */
+    .quests-container {
+        padding: 1rem;                     /* Less space around the quest list */
+    }
+    
+    /* Individual quest items get smaller padding */
+    .quest-item {
+        padding: 1rem;                     /* Less space inside each quest */
+    }
+    
+    /*  FORM ACTIONS - Buttons at the bottom of forms */
+    
+    /* Form action buttons stack vertically on phones */
+    .form-actions {
+        flex-direction: column;            /* Stack buttons on top of each other */
+        gap: 0.5rem;                       /* Space between stacked buttons */
+    }
+    
+    /* All buttons in form actions take full width */
+    .form-actions button {
+        width: 100%;                       /* Make buttons stretch across the screen */
+    }
+    
+    /*  INPUT FIELDS - Text boxes and dropdowns */
+    
+    /* Input fields get smaller text on phones */
+    input, textarea, select {
+        font-size: 16px;                   /* Bigger text prevents zoom on iOS */
+    }
+    
+    /*  STREAK DISPLAY - Fire streak adjustments for phones */
+    
+    /* Streak items get smaller on phones */
+    .streak-item {
+        font-size: 0.9rem;                 /* Smaller text */
+    }
+    
+    /* Streak fire icons get smaller */
+    .streak-fire i {
+        font-size: 1.2rem;                 /* Smaller fire icons */
+    }
+    
+    /*  PROFILE PAGE - Your profile on phones */
+    
+    /* Profile container gets less padding */
+    .profile-container {
+        padding: 1rem;                     /* Less space around profile content */
+    }
+    
+    /* Profile header stacks vertically on phones */
+    .profile-header {
+        flex-direction: column;            /* Stack header items vertically */
+        text-align: center;                /* Center everything */
+        gap: 1rem;                         /* Space between stacked items */
+    }
+    
+    /* Profile header title gets smaller */
+    .profile-header h1 {
+        font-size: 2rem;                   /* Smaller title text */
+    }
+    
+    /* Profile content uses one column on phones */
+    .profile-content {
+        grid-template-columns: 1fr;        /* Just one column */
+        gap: 1rem;                         /* Less space between sections */
+    }
+    
+    /* Profile sections get less padding */
+    .profile-section {
+        padding: 1rem;                     /* Less space inside each section */
+    }
+    
+    /*  BADGES - Achievement badges on phones */
+    
+    /* Badge grid uses fewer columns on phones */
+    .badges-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));  /* Smaller minimum width */
+        gap: 0.75rem;                      /* Less space between badges */
+    }
+    
+    /* Individual badge items get smaller */
+    .badge-item {
+        padding: 0.75rem;                  /* Less space inside each badge */
+    }
+    
+    /* Badge icons get smaller on phones */
+    .badge-icon {
+        font-size: 1.5rem;                 /* Smaller badge icons */
+    }
+    
+    /* Badge names get smaller text */
+    .badge-name {
+        font-size: 0.8rem;                 /* Smaller badge name text */
+    }
+    
+    /* Badge descriptions get smaller text */
+    .badge-description {
+        font-size: 0.7rem;                 /* Smaller description text */
+    }
+    
+    /*  BADGE NOTIFICATIONS - Popups on phones */
+    
+    /* Badge notifications take more of the screen on phones */
+    .badge-notification {
+        right: 10px;                       /* Closer to the edge */
+        left: 10px;                        /* Also close to left edge */
+        max-width: none;                   /* Remove width limit */
+        transform: translateY(-100px);     /* Start hidden above screen */
+    }
+    
+    /* Show notification by sliding down instead of from right */
+    .badge-notification.show {
+        transform: translateY(0);          /* Slide down into view */
+    }
+}

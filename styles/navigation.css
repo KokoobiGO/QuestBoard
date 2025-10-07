@@ -1,0 +1,243 @@
+/* NAVIGATION BAR - The top bar that stays at the top of the page */
+
+/* The main navigation bar at the top */
+.top-nav {
+    background: rgba(255, 255, 255, 0.95);  /* Almost white background, a little see-through */
+    padding: 1rem 0;                        /* Space above and below */
+    position: sticky;                       /* Stays at the top when you scroll */
+    top: 0;                                 /* Sticks to the very top */
+}
+
+/* Container that holds everything in the navbar */
+.nav-container {
+    max-width: 1200px;                      /* Don't get too wide on big screens */
+    margin: 0 auto;                         /* Center it on the page */
+    padding: 0 2rem;                        /* Space on left and right sides */
+    display: flex;                          /* Put items in a row */
+    justify-content: space-between;         /* Spread items apart */
+    align-items: center;                    /* Line everything up nicely */
+    gap: 0.5rem;                           /* Small space between items */
+}
+
+/* The app name/logo */
+.nav-brand {
+    font-weight: 700;                       /* Make it bold and strong */
+    font-size: 1.5rem;                      /* Make it bigger than normal text */
+    color: #667eea;                         /* Pretty purple color */
+}
+
+/* Container for all the action buttons */
+.nav-actions {
+    display: flex;                          /* Put buttons in a row */
+    align-items: center;                    /* Line them up nicely */
+    justify-content: flex-end;              /* Push them to the right side */
+    width: 100%;                           /* Take up all available space */
+}
+
+/* Container for buttons on the right side */
+.nav-buttons-right {
+    display: flex;                          /* Put buttons in a row */
+    align-items: center;                    /* Line them up nicely */
+    gap: 0.75rem;                          /* Space between each button */
+}
+
+/* STATS DISPLAY - Shows your numbers like completed quests and streak */
+
+/* Container that shows your stats (like points and progress) */
+.stats-container {
+    display: flex;                          /* Put stats in a row */
+    align-items: center;                    /* Line them up nicely */
+    gap: 0.75rem;                          /* Space between each stat */
+    background: rgba(102, 126, 234, 0.1);  /* Light purple background */
+    padding: 0.5rem 1rem;                  /* Space inside the container */
+    border-radius: 20px;                   /* Round corners */
+    border: 1px solid rgba(102, 126, 234, 0.2);  /* Light purple border */
+    flex-wrap: wrap;                       /* Wrap to next line if needed */
+    justify-content: center;               /* Center everything */
+}
+
+/* Progress bar container */
+.progress-container {
+    width: 100%;                           /* Take full width available */
+    max-width: 150px;                      /* But don't get too wide */
+    height: 8px;                           /* Make it thin */
+    background-color: rgba(102, 126, 234, 0.2);  /* Light purple background */
+    border-radius: 4px;                    /* Round corners */
+    overflow: hidden;                      /* Hide anything that goes outside */
+    margin: 0 0.5rem;                      /* Space on left and right */
+}
+
+/* The actual progress bar that fills up */
+.progress-bar {
+    height: 100%;                          /* Fill the whole container height */
+    background: linear-gradient(90deg, #667eea, #764ba2);  /* Purple gradient */
+    border-radius: 4px;                    /* Round corners */
+    transition: width 0.3s ease;          /* Smooth animation when it grows */
+}
+
+/* Individual stat items (like points, level, etc.) */
+.stat-item {
+    display: flex;                         /* Put icon and text in a row */
+    align-items: center;                   /* Line them up nicely */
+    gap: 0.25rem;                         /* Small space between icon and text */
+    font-size: 0.9rem;                    /* A bit smaller than normal text */
+    color: #667eea;                       /* Purple color */
+    font-weight: 600;                     /* Make it a bit bold */
+}
+
+.stat-item i {
+    font-size: 1rem;                      /* Icon size */
+}
+
+.stat-item small {
+    font-size: 0.75rem;                   /* Even smaller text */
+    opacity: 0.8;                         /* Make it a bit faded */
+}
+
+/* NOTIFICATION BELL - The bell icon that shows when you have notifications */
+.bell-btn {
+    background: none;                      /* No background color */
+    border: none;                          /* No border */
+    font-size: 1.25rem;                    /* Make the bell icon bigger */
+    color: #667eea;                        /* Purple color */
+    cursor: pointer;                       /* Show it's clickable */
+    padding: 0.5rem;                       /* Space around the icon */
+}
+
+/* PROFILE BUTTON - Shows your avatar and name */
+.profile-btn {
+    display: flex;                         /* Put avatar and name in a row */
+    align-items: center;                   /* Line them up nicely */
+    gap: 0.5rem;                          /* Space between avatar and name */
+    background: rgba(102, 126, 234, 0.1); /* Light purple background */
+    border: 1px solid rgba(102, 126, 234, 0.2);  /* Light purple border */
+    border-radius: 20px;                   /* Round corners */
+    padding: 0.5rem 1rem;                 /* Space inside */
+    color: #667eea;                        /* Purple text */
+    cursor: pointer;                       /* Show it's clickable */
+    transition: all 0.2s ease;            /* Smooth animation on hover */
+    font-size: 0.9rem;                     /* Text size */
+    font-weight: 600;                      /* Make it a bit bold */
+}
+
+.profile-btn:hover {
+    background: rgba(102, 126, 234, 0.15); /* Darker purple when you hover */
+    transform: translateY(-1px);           /* Move up slightly when you hover */
+}
+
+/* The user's avatar (profile picture) */
+.profile-avatar {
+    width: 24px;                           /* Small circle */
+    height: 24px;                          /* Small circle */
+    border-radius: 50%;                    /* Make it perfectly round */
+    background: linear-gradient(90deg, #667eea, #764ba2);  /* Purple gradient */
+    display: flex;                         /* Center the letter inside */
+    align-items: center;                   /* Center vertically */
+    justify-content: center;               /* Center horizontally */
+    color: white;                          /* White text */
+    font-size: 0.8rem;                     /* Small text for the initial */
+}
+
+/* The user's name text */
+.profile-text {
+    font-size: 0.9rem;                     /* Text size */
+}
+
+/* CREATE QUEST BUTTON - The big button to make new quests */
+.create-quest-btn {
+    display: flex;                         /* Put icon and text in a row */
+    align-items: center;                   /* Line them up nicely */
+    gap: 0.5rem;                          /* Space between icon and text */
+    background: linear-gradient(90deg, #667eea, #764ba2);  /* Purple gradient */
+    color: white;                          /* White text */
+    border: none;                          /* No border */
+    border-radius: 20px;                   /* Round corners */
+    padding: 0.5rem 1rem;                 /* Space inside */
+    font-size: 0.9rem;                     /* Text size */
+    font-weight: 600;                      /* Make it bold */
+    cursor: pointer;                       /* Show it's clickable */
+    transition: all 0.2s ease;            /* Smooth animation */
+}
+
+.create-quest-btn:hover {
+    transform: translateY(-2px);           /* Move up when you hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Add shadow when you hover */
+}
+
+/* USER INFO - Shows your username and details */
+.user-info {
+    display: flex;                         /* Put items in a row */
+    align-items: center;                   /* Line them up nicely */
+    gap: 1rem;                            /* Space between items */
+    padding: 0.5rem 1rem;                 /* Space inside */
+    background: rgba(102, 126, 234, 0.1); /* Light purple background */
+    border-radius: 2rem;                   /* Very round corners */
+}
+
+/* LOGOUT BUTTON - Button to sign out of the app */
+.logout-btn {
+    background: #ff4757;                   /* Red background */
+    color: white;                          /* White text */
+    border: none;                          /* No border */
+    padding: 0.5rem 1rem;                 /* Space inside */
+    border-radius: 1rem;                   /* Round corners */
+    cursor: pointer;                       /* Show it's clickable */
+}
+
+/* BUTTON STYLES - How all the buttons look and behave */
+
+/* Primary button (main actions) - Purple and important looking */
+.btn-primary {
+    display: flex;                         /* Put icon and text in a row */
+    align-items: center;                   /* Line them up nicely */
+    gap: 0.5rem;                          /* Space between icon and text */
+    background: linear-gradient(135deg, #667eea, #764ba2);  /* Purple gradient */
+    color: white;                          /* White text */
+    border: none;                          /* No border */
+    border-radius: 8px;                    /* Round corners */
+    padding: 0.75rem 1.25rem;             /* Space inside */
+    font-size: 0.9rem;                     /* Text size */
+    font-weight: 600;                      /* Make it bold */
+    cursor: pointer;                       /* Show it's clickable */
+    transition: all 0.3s ease;            /* Smooth animation */
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);  /* Soft shadow */
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);           /* Move up when you hover */
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);  /* Bigger shadow when you hover */
+    background: linear-gradient(135deg, #5a6fd8, #6a42a0);  /* Slightly different purple */
+}
+
+.btn-primary:active {
+    transform: translateY(0);              /* Go back down when you click */
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);  /* Normal shadow when you click */
+}
+
+/* Secondary button (less important actions) - Red for warnings or deletions */
+.btn-secondary {
+    display: flex;                         /* Put icon and text in a row */
+    align-items: center;                   /* Line them up nicely */
+    gap: 0.5rem;                          /* Space between icon and text */
+    background: linear-gradient(135deg, #ff4757, #ff3742);  /* Red gradient */
+    color: white;                          /* White text */
+    border: none;                          /* No border */
+    border-radius: 8px;                    /* Round corners */
+    padding: 0.75rem 1.25rem;             /* Space inside */
+    font-size: 0.9rem;                     /* Text size */
+    font-weight: 600;                      /* Make it bold */
+    cursor: pointer;                       /* Show it's clickable */
+    transition: all 0.3s ease;            /* Smooth animation */
+    box-shadow: 0 2px 4px rgba(255, 71, 87, 0.2);  /* Soft red shadow */
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);           /* Move up when you hover */
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);  /* Bigger red shadow when you hover */
+    background: linear-gradient(135deg, #ff3742, #ff2838);  /* Slightly different red */
+}
+
+.btn-secondary:active {
+    transform: translateY(0);              /* Go back down when you click */
+    box-shadow: 0 2px 4px rgba(255, 71, 87, 0.2);  /* Normal shadow when you click */
+}

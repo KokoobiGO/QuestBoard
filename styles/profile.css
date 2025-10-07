@@ -1,0 +1,550 @@
+/* STREAK DISPLAY - Shows your daily streak with cool fire effects! */
+
+/* FIRE EFFECTS - Cool fire animations for hot streaks */
+
+/* Each streak item (like a day in your streak) */
+.streak-item {
+    position: relative;                    /* Allows for special positioning */
+    transition: all 0.3s ease;            /* Smooth animation when things change */
+}
+
+/* Fire icons in streak items */
+.streak-item i {
+    color: #ff6b35;                        /* Orange color like fire */
+    transition: all 0.3s ease;            /* Smooth color changes */
+}
+
+/* When you hover over a streak item, it moves up a little */
+.streak-item:hover {
+    transform: translateY(-2px);           /* Move up 2 pixels */
+}
+
+/* When you hover, the fire gets brighter and glows */
+.streak-item:hover i {
+    color: #ff4500;                        /* Brighter orange */
+    text-shadow: 0 0 8px rgba(255, 107, 53, 0.6);  /* Glowing effect */
+}
+
+/* STREAK MILESTONES - Special achievements for long streaks */
+
+/* Milestone markers that pulse with a glow */
+.streak-milestone {
+    animation: pulse-glow 2s infinite;     /* Glowing animation that repeats */
+}
+
+/* Fire icons in milestones are golden */
+.streak-milestone i {
+    color: #ffa500 !important;             /* Golden orange color */
+    text-shadow: 0 0 10px rgba(255, 165, 0, 0.8);  /* Golden glow */
+}
+
+/* Special fire animation for active streaks */
+.streak-fire {
+    animation: fire-dance 1.5s infinite;   /* Dancing fire animation */
+}
+
+/* Active streak fire is bright red */
+.streak-fire i {
+    color: #ff1744 !important;             /* Bright red color */
+    text-shadow: 0 0 15px rgba(255, 23, 68, 0.9);  /* Red glow */
+}
+
+/* STREAK COUNTER - The number showing your streak */
+
+/* Basic styling for the streak number */
+#streakCounter {
+    font-weight: bold;                     /* Make it bold */
+    color: #333;                           /* Dark gray color */
+    transition: color 0.3s ease;           /* Smooth color changes */
+}
+
+/* Milestone streak numbers are golden */
+.streak-milestone #streakCounter {
+    color: #ffa500 !important;             /* Golden color */
+    text-shadow: 0 0 5px rgba(255, 165, 0, 0.5);  /* Golden glow */
+}
+
+/* Active streak numbers are bright red and glow */
+.streak-fire #streakCounter {
+    color: #ff1744 !important;             /* Bright red color */
+    text-shadow: 0 0 8px rgba(255, 23, 68, 0.7);  /* Red glow */
+    animation: number-glow 1s infinite alternate;  /* Pulsing glow animation */
+}
+
+/* Animation that makes numbers glow brighter and dimmer */
+@keyframes number-glow {
+    from {
+        text-shadow: 0 0 8px rgba(255, 23, 68, 0.7);  /* Start with normal glow */
+    }
+    to {
+        text-shadow: 0 0 12px rgba(255, 23, 68, 1);   /* End with brighter glow */
+    }
+}
+
+/* PROFILE PAGE - Your personal page that covers the whole screen */
+
+/* The main profile page that takes over the whole screen */
+.profile-page {
+    position: fixed;                       /* Stay in place when scrolling */
+    top: 0;                               /* Start at the very top */
+    left: 0;                              /* Start at the very left */
+    width: 100%;                          /* Cover the whole screen width */
+    height: 100vh;                        /* Cover the whole screen height */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* Purple gradient background */
+    z-index: 1000;                        /* Make sure it appears on top */
+    overflow-y: auto;                     /* Add scrollbar if content is too long */
+}
+
+/* Container that holds all profile content */
+.profile-container {
+    max-width: 1200px;                     /* Don't get too wide */
+    margin: 0 auto;                        /* Center it on the page */
+    padding: 2rem;                         /* Space around the content */
+    min-height: 100vh;                     /* Take at least the full screen height */
+}
+
+/* 🔙 PROFILE HEADER - Top section with back button and title */
+
+/* Header area at the top of the profile */
+.profile-header {
+    display: flex;                         /* Put items in a row */
+    align-items: center;                   /* Center them vertically */
+    justify-content: space-between;        /* Spread them apart */
+    gap: 1rem;                            /* Space between items */
+    margin-bottom: 2rem;                   /* Space below the header */
+    color: white;                          /* White text */
+}
+
+/* Left section of header (contains back button and title) */
+.profile-header .left-section {
+    display: flex;                         /* Put items in a row */
+    align-items: center;                   /* Center them vertically */
+    gap: 1rem;                            /* Space between items */
+}
+
+/* Back button to return to the main page */
+.back-btn {
+    background: rgba(255, 255, 255, 0.2);  /* Semi-transparent white background */
+    border: 1px solid rgba(255, 255, 255, 0.3);  /* Semi-transparent white border */
+    color: white;                          /* White text */
+    padding: 0.75rem 1rem;                 /* Space inside the button */
+    border-radius: 0.5rem;                 /* Round corners */
+    cursor: pointer;                       /* Show it's clickable */
+    transition: all 0.3s ease;             /* Smooth animation */
+    display: flex;                         /* Put icon and text in a row */
+    align-items: center;                   /* Center them vertically */
+    gap: 0.5rem;                          /* Space between icon and text */
+    font-size: 0.9rem;                     /* Slightly smaller text */
+}
+
+/* Make back button brighter when you hover over it */
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);  /* Brighter background */
+    transform: translateY(-2px);           /* Move up a little */
+}
+
+/* Main title of the profile page */
+.profile-header h1 {
+    font-size: 2.5rem;                     /* Make it really big */
+    font-weight: 700;                      /* Make it very bold */
+    margin: 0;                             /* Remove default spacing */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);  /* Add shadow for depth */
+}
+
+/* 📊 PROFILE CONTENT - Main content area with all sections */
+
+/* Grid layout for profile sections */
+.profile-content {
+    display: grid;                         /* Use grid layout */
+    gap: 2rem;                            /* Space between sections */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));  /* Responsive columns */
+}
+
+/* Individual sections (like stats, badges, etc.) */
+.profile-section {
+    background: white;                     /* White background */
+    border-radius: 1rem;                   /* Round corners */
+    padding: 1.5rem;                       /* Space inside the section */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);  /* Soft shadow */
+    transition: transform 0.3s ease;       /* Smooth animation */
+}
+
+/* Make sections float up when you hover over them */
+.profile-section:hover {
+    transform: translateY(-5px);           /* Move up 5 pixels */
+}
+
+/* Section titles (like "User Info", "Stats", etc.) */
+.profile-section h2 {
+    display: flex;                         /* Put icon and text in a row */
+    align-items: center;                   /* Center them vertically */
+    gap: 0.5rem;                          /* Space between icon and text */
+    margin: 0 0 1.5rem 0;                  /* Space below the title */
+    font-size: 1.25rem;                    /* Make it bigger */
+    font-weight: 600;                      /* Make it bold */
+    color: #374151;                        /* Dark gray color */
+}
+
+/* Icons in section titles */
+.profile-section h2 i {
+    color: #667eea;                        /* Purple color */
+}
+
+/* USER INFO - Basic information about you */
+
+/* Container for user information items */
+.profile-info {
+    display: flex;                         /* Stack items vertically */
+    flex-direction: column;                /* Stack them in a column */
+    gap: 1rem;                            /* Space between items */
+}
+
+/* Individual info items (like username, email) */
+.info-item {
+    display: flex;                         /* Put label and value in a row */
+    justify-content: space-between;        /* Spread them apart */
+    align-items: center;                   /* Center them vertically */
+    padding: 0.75rem;                      /* Space inside each item */
+    background: #f8fafc;                   /* Light gray background */
+    border-radius: 0.5rem;                 /* Round corners */
+    border-left: 4px solid #667eea;        /* Purple line on the left */
+}
+
+/* Labels for info items (like "Username:", "Email:") */
+.info-item .label {
+    font-weight: 600;                      /* Make it bold */
+    color: #374151;                        /* Dark gray color */
+}
+
+/* Values for info items (your actual username, email, etc.) */
+.info-item .value {
+    color: #6b7280;                        /* Medium gray color */
+}
+
+/* STATS CARDS - Numbers showing your achievements */
+
+/* Container for stat cards */
+.profile-stats {
+    display: grid;                         /* Use grid layout */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));  /* Responsive columns */
+    gap: 1rem;                            /* Space between cards */
+}
+
+/* Individual stat cards */
+.stat-card {
+    display: flex;                         /* Put icon and info in a row */
+    align-items: center;                   /* Center them vertically */
+    gap: 1rem;                            /* Space between icon and info */
+    padding: 1rem;                         /* Space inside the card */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* Purple gradient */
+    border-radius: 0.75rem;                /* Round corners */
+    color: white;                          /* White text */
+    text-align: center;                    /* Center the text */
+}
+
+/* Icons in stat cards */
+.stat-icon {
+    font-size: 1.5rem;                     /* Make icons big */
+    opacity: 0.9;                          /* Make them slightly see-through */
+}
+
+/* Container for stat information (number and label) */
+.stat-info {
+    display: flex;                         /* Stack number and label vertically */
+    flex-direction: column;                /* Stack them in a column */
+    align-items: flex-start;               /* Align to the left */
+}
+
+/* The big number in each stat card */
+.stat-value {
+    font-size: 1.5rem;                     /* Make it big */
+    font-weight: 700;                      /* Make it very bold */
+    line-height: 1;                        /* Remove extra line spacing */
+}
+
+/* The label under each stat number */
+.stat-label {
+    font-size: 0.75rem;                    /* Make it small */
+    opacity: 0.9;                          /* Make it slightly see-through */
+    text-transform: uppercase;             /* Make letters UPPERCASE */
+    letter-spacing: 0.5px;                 /* Space out the letters */
+}
+
+/* QUEST PROGRESS - Shows your current quest status */
+
+/* Container for quest progress items */
+.quest-progress {
+    display: flex;                         /* Stack items vertically */
+    flex-direction: column;                /* Stack them in a column */
+    gap: 1rem;                            /* Space between items */
+}
+
+/* Individual progress items */
+.progress-item {
+    display: flex;                         /* Put label and value in a row */
+    justify-content: space-between;        /* Spread them apart */
+    align-items: center;                   /* Center them vertically */
+    padding: 1rem;                         /* Space inside each item */
+    background: #f8fafc;                   /* Light gray background */
+    border-radius: 0.5rem;                 /* Round corners */
+    border: 1px solid #e5e7eb;             /* Light border */
+}
+
+/* Labels for progress items */
+.progress-label {
+    font-weight: 500;                      /* Make it medium bold */
+    color: #374151;                        /* Dark gray color */
+}
+
+/* Values for progress items */
+.progress-value {
+    font-weight: 700;                      /* Make it very bold */
+    color: #667eea;                        /* Purple color */
+    font-size: 1.1rem;                     /* Make it slightly bigger */
+}
+
+/* PROFILE BADGES - Your achievements and rewards */
+
+/* Container for profile badges */
+.profile-badges {
+    display: grid;                         /* Use grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));  /* Responsive columns */
+    gap: 1rem;                            /* Space between badges */
+}
+
+/* Individual badge items */
+.profile-badge {
+    display: flex;                         /* Stack items vertically */
+    flex-direction: column;                /* Stack them in a column */
+    align-items: center;                   /* Center them horizontally */
+    padding: 1rem;                         /* Space inside the badge */
+    background: #f8fafc;                   /* Light gray background */
+    border-radius: 0.75rem;                /* Round corners */
+    border: 2px solid #e5e7eb;             /* Light border */
+    transition: all 0.3s ease;             /* Smooth animation */
+    text-align: center;                    /* Center the text */
+}
+
+/* Earned badges look special (golden) */
+.profile-badge.earned {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);  /* Golden gradient */
+    border-color: #d97706;                 /* Golden border */
+    color: white;                          /* White text */
+    transform: scale(1.05);                /* Make it slightly bigger */
+}
+
+/* Icons in badges */
+.profile-badge-icon {
+    font-size: 2rem;                       /* Make icons big */
+    margin-bottom: 0.5rem;                 /* Space below the icon */
+}
+
+/* Icons in earned badges are white with shadow */
+.profile-badge.earned .profile-badge-icon {
+    color: white;                          /* White color */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);  /* Shadow for depth */
+}
+
+/* Badge names/titles */
+.profile-badge-name {
+    font-weight: 600;                      /* Make it bold */
+    font-size: 0.8rem;                     /* Make it small */
+    margin-bottom: 0.25rem;                /* Space below the name */
+}
+
+/* Badge descriptions */
+.profile-badge-description {
+    font-size: 0.7rem;                     /* Make it very small */
+    opacity: 0.8;                          /* Make it slightly see-through */
+    line-height: 1.2;                      /* Make lines easier to read */
+}
+
+/* Unearned badges look faded */
+.profile-badge:not(.earned) {
+    opacity: 0.6;                          /* Make them see-through */
+}
+
+/* Icons in unearned badges are gray */
+.profile-badge:not(.earned) .profile-badge-icon {
+    color: #9ca3af;                        /* Gray color */
+}
+
+/* 🏅 BADGES CONTAINER - Special container for badge pages */
+
+/* Main container for badges with glass effect */
+.badges-container {
+    background: rgba(255, 255, 255, 0.1);  /* Semi-transparent white */
+    border-radius: 12px;                   /* Round corners */
+    padding: 1rem;                         /* Space inside the container */
+    margin: 1rem 0;                        /* Space above and below */
+    backdrop-filter: blur(10px);           /* Blur effect behind the container */
+    border: 1px solid rgba(255, 255, 255, 0.2);  /* Semi-transparent border */
+}
+
+/* Grid layout for badges */
+.badges-grid {
+    display: grid;                         /* Use grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));  /* Responsive columns */
+    gap: 1rem;                            /* Space between badges */
+    margin-top: 1rem;                      /* Space above the grid */
+}
+
+/* Individual badge items in the grid */
+.badge-item {
+    display: flex;                         /* Stack items vertically */
+    flex-direction: column;                /* Stack them in a column */
+    align-items: center;                   /* Center them horizontally */
+    padding: 1rem;                         /* Space inside the badge */
+    background: rgba(255, 255, 255, 0.1);  /* Semi-transparent white */
+    border-radius: 8px;                    /* Round corners */
+    border: 1px solid rgba(255, 255, 255, 0.2);  /* Semi-transparent border */
+    transition: all 0.3s ease;             /* Smooth animation */
+    text-align: center;                    /* Center the text */
+}
+
+/* Make badges float up when you hover over them */
+.badge-item:hover {
+    transform: translateY(-2px);           /* Move up a little */
+    background: rgba(255, 255, 255, 0.15); /* Brighter background */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);  /* Add shadow */
+}
+
+/* Earned badges have golden glow */
+.badge-item.earned {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));  /* Golden gradient */
+    border-color: rgba(255, 215, 0, 0.5);  /* Golden border */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);  /* Golden glow */
+}
+
+/* Icons in earned badges are golden */
+.badge-item.earned .badge-icon {
+    color: #ffd700;                        /* Golden color */
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);  /* Golden glow */
+}
+
+/* Locked badges are faded and gray */
+.badge-item.locked {
+    opacity: 0.5;                          /* Make them see-through */
+    filter: grayscale(100%);               /* Remove all color (make gray) */
+}
+
+/* Icons in badges */
+.badge-icon {
+    font-size: 2rem;                       /* Make icons big */
+    margin-bottom: 0.5rem;                 /* Space below the icon */
+    color: #64b5f6;                        /* Light blue color */
+    transition: all 0.3s ease;             /* Smooth animation */
+}
+
+/* Badge names */
+.badge-name {
+    font-weight: bold;                     /* Make it bold */
+    font-size: 0.9rem;                     /* Make it medium size */
+    margin-bottom: 0.25rem;                /* Space below the name */
+    color: #fff;                           /* White color */
+}
+
+/* Badge descriptions */
+.badge-description {
+    font-size: 0.75rem;                    /* Make it small */
+    color: rgba(255, 255, 255, 0.8);       /* Semi-transparent white */
+    line-height: 1.2;                      /* Make lines easier to read */
+}
+
+/* Requirements to earn the badge */
+.badge-requirement {
+    font-size: 0.7rem;                     /* Make it very small */
+    color: rgba(255, 255, 255, 0.6);       /* More transparent white */
+    margin-top: 0.25rem;                   /* Space above the requirement */
+    font-style: italic;                    /* Make it slanted */
+}
+
+/* BADGE NOTIFICATION - Popup when you earn a badge */
+
+/* Notification popup that slides in from the right */
+.badge-notification {
+    position: fixed;                       /* Stay in place when scrolling */
+    top: 20px;                            /* Position from top */
+    right: 20px;                          /* Position from right */
+    background: linear-gradient(135deg, #ffd700, #ffb300);  /* Golden gradient */
+    color: #333;                           /* Dark text */
+    padding: 1rem;                         /* Space inside the notification */
+    border-radius: 12px;                   /* Round corners */
+    box-shadow: 0 8px 32px rgba(255, 215, 0, 0.4);  /* Golden shadow */
+    z-index: 10000;                       /* Make sure it appears on top */
+    transform: translateX(400px);          /* Start hidden (off-screen) */
+    transition: transform 0.3s ease;       /* Smooth slide animation */
+    max-width: 300px;                     /* Don't get too wide */
+    border: 2px solid rgba(255, 215, 0, 0.8);  /* Golden border */
+}
+
+/* Show the notification (slide it in) */
+.badge-notification.show {
+    transform: translateX(0);              /* Slide it into view */
+}
+
+/* Content inside the notification */
+.badge-notification-content {
+    display: flex;                         /* Put icon and text in a row */
+    align-items: center;                   /* Center them vertically */
+    gap: 1rem;                            /* Space between icon and text */
+}
+
+/* Icon in the notification */
+.badge-notification .badge-icon {
+    font-size: 2.5rem;                     /* Make it big */
+    color: #333;                           /* Dark color */
+    text-shadow: none;                     /* No shadow */
+}
+
+/* Title in the notification */
+.badge-info h4 {
+    margin: 0 0 0.25rem 0;                 /* Space below the title */
+    font-size: 1.1rem;                     /* Make it bigger */
+    font-weight: bold;                     /* Make it bold */
+}
+
+/* Text in the notification */
+.badge-info p {
+    margin: 0.25rem 0;                     /* Space above and below */
+    font-size: 0.9rem;                     /* Make it medium size */
+}
+
+/* First paragraph (badge name) is bold */
+.badge-info p:first-of-type {
+    font-weight: bold;                     /* Make it bold */
+}
+
+/* 🏷️ BADGE SECTION HEADER - Title for badge sections */
+
+/* Header for badge sections */
+.badges-header {
+    display: flex;                         /* Put items in a row */
+    align-items: center;                   /* Center them vertically */
+    gap: 0.5rem;                          /* Space between items */
+    margin-bottom: 1rem;                   /* Space below the header */
+}
+
+/* Title in the header */
+.badges-header h3 {
+    margin: 0;                             /* Remove default spacing */
+    color: #fff;                           /* White color */
+    font-size: 1.2rem;                     /* Make it bigger */
+}
+
+/* Icon in the header */
+.badges-header i {
+    color: #ffd700;                        /* Golden color */
+    font-size: 1.3rem;                     /* Make it bigger */
+}
+
+/* Badge count indicator */
+.badges-count {
+    background: rgba(255, 215, 0, 0.2);    /* Semi-transparent golden background */
+    color: #ffd700;                        /* Golden text */
+    padding: 0.25rem 0.5rem;               /* Space inside the indicator */
+    border-radius: 12px;                   /* Round corners */
+    font-size: 0.8rem;                     /* Make it small */
+    font-weight: bold;                     /* Make it bold */
+    margin-left: auto;                     /* Push it to the right */
+}

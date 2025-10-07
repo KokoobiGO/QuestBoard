@@ -1,0 +1,57 @@
+/* BASIC SETUP - This makes everything look nice and clean */
+
+/* This removes extra space around everything so it looks neat */
+* {
+    margin: 0;        /* No extra space outside */
+    padding: 0;       /* No extra space inside */
+    box-sizing: border-box;  /* Makes sizing easier to understand */
+}
+
+/* This sets up how the whole page looks */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;  /* Nice, easy-to-read fonts */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* Pretty purple background that fades */
+    min-height: 100vh;  /* Makes sure the page fills the whole screen */
+    color: #333;        /* Dark gray text that's easy to read */
+}
+
+/* HELPER TOOLS - Special tricks to make things work better */
+
+/* This makes things invisible when we don't want to see them */
+.hidden {
+    display: none !important;  /* Hide it completely! */
+}
+
+/* ANIMATIONS - Special effects that make things move and glow */
+
+/* This makes things glow and get bigger, then smaller - like breathing! */
+@keyframes pulse-glow {
+    0%, 100% {
+        transform: scale(1);                              /* Normal size */
+        box-shadow: 0 0 5px rgba(255, 165, 0, 0.3);     /* Small orange glow */
+    }
+    50% {
+        transform: scale(1.05);                           /* A little bigger */
+        box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);    /* Bigger orange glow */
+    }
+}
+
+/* This makes things dance like fire - wiggling and glowing red! */
+@keyframes fire-dance {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);                 /* Normal size, no turn */
+        box-shadow: 0 0 10px rgba(255, 23, 68, 0.4);    /* Red glow */
+    }
+    25% {
+        transform: scale(1.1) rotate(1deg);               /* Bigger, turn right a little */
+        box-shadow: 0 0 20px rgba(255, 23, 68, 0.7);    /* Brighter red glow */
+    }
+    50% {
+        transform: scale(1.05) rotate(-1deg);             /* Medium size, turn left a little */
+        box-shadow: 0 0 15px rgba(255, 23, 68, 0.6);    /* Medium red glow */
+    }
+    75% {
+        transform: scale(1.08) rotate(0.5deg);            /* A bit bigger, small right turn */
+        box-shadow: 0 0 18px rgba(255, 23, 68, 0.8);    /* Strong red glow */
+    }
+}

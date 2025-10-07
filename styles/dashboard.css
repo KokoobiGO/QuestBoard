@@ -1,0 +1,225 @@
+/* 🏠 MAIN DASHBOARD - The home page where you see all your quests */
+
+/* The main content area of the page */
+.main-content {
+    padding: 2rem;                         /* Space around the content */
+    max-width: 1200px;                     /* Don't get too wide */
+    margin: 0 auto;                        /* Center it on the page */
+}
+
+/* 📋 DASHBOARD GRID - Layout for the main dashboard cards */
+
+/* Container that holds the "Create Quest" and "Quest List" cards side by side */
+.dashboard-grid {
+    display: grid;                         /* Use grid layout */
+    grid-template-columns: 1fr 1fr;        /* Two equal columns */
+    gap: 2rem;                            /* Space between the columns */
+    margin-bottom: 2rem;                   /* Space below the grid */
+}
+
+/* QUEST CREATION CARD - Where you make new quests */
+
+/* The card on the left where you create new quests */
+.create-quest-card {
+    background: rgba(255, 255, 255, 0.95); /* Almost white background */
+    border-radius: 1rem;                   /* Round corners */
+    padding: 1.5rem;                       /* Space inside the card */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Soft shadow */
+}
+
+/* QUEST LIST CARD - Where you see all your quests */
+
+/* The card on the right that shows all your quests */
+.quests-list-card {
+    background: rgba(255, 255, 255, 0.95); /* Almost white background */
+    border-radius: 1rem;                   /* Round corners */
+    padding: 1.5rem;                       /* Space inside the card */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Soft shadow */
+}
+
+/* 🏷️ CARD HEADERS - The titles at the top of each card */
+
+/* The header/title area of each card */
+.card-header {
+    margin-bottom: 1.5rem;                 /* Space below the header */
+    padding-bottom: 1rem;                  /* Space inside the header */
+    border-bottom: 2px solid #e1e5e9;      /* Line under the header */
+}
+
+/* The title text in the header */
+.card-header h2 {
+    color: #2d3748;                        /* Dark gray color */
+    margin: 0;                             /* Remove default spacing */
+    font-size: 1.5rem;                     /* Make it bigger */
+}
+
+/* 📦 CARD BODY - The main content area of each card */
+
+/* The main content area inside each card */
+.card-body {
+    padding: 0;                            /* No extra padding (cards already have padding) */
+    margin: 0;                             /* No extra margin */
+    flex: 1;                               /* Take up remaining space in flex containers */
+}
+
+/* 🎮 FORM ACTIONS - Buttons at the bottom of forms */
+
+/* Container for action buttons (like Submit, Clear) */
+.form-actions {
+    display: flex;                         /* Put buttons in a row */
+    gap: 1rem;                            /* Space between buttons */
+    margin-top: 1.5rem;                    /* Space above the buttons */
+}
+
+/* INDIVIDUAL QUEST ITEMS - Each quest in your list */
+
+/* Each individual quest in the list */
+.quest-item {
+    background: #f8f9fa;                   /* Light gray background */
+    border-radius: 0.75rem;                /* Round corners */
+    padding: 1.25rem;                      /* Space inside each quest */
+    margin-bottom: 1rem;                   /* Space between quests */
+    border-left: 4px solid #667eea;        /* Purple line on the left */
+    transition: all 0.3s ease;             /* Smooth animation for changes */
+}
+
+/* When you hover over a quest, make it slightly bigger */
+.quest-item:hover {
+    transform: translateY(-2px);           /* Move it up a little */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);  /* Add a shadow */
+}
+
+/* ✅ COMPLETED QUESTS - Quests you've finished */
+
+/* Completed quests look different (faded out) */
+.quest-item.completed {
+    opacity: 0.7;                          /* Make it see-through */
+    background: #e8f5e8;                   /* Light green background */
+    border-left-color: #28a745;           /* Green line on the left */
+}
+
+/* Cross out the title of completed quests */
+.quest-item.completed .quest-title {
+    text-decoration: line-through;         /* Draw a line through the text */
+}
+
+/* 🏷️ QUEST TITLES - The name of each quest */
+
+/* The title/name of each quest */
+.quest-title {
+    font-size: 1.125rem;                   /* Make it a bit bigger */
+    font-weight: 600;                      /* Make it bold */
+    color: #2d3748;                        /* Dark gray color */
+    margin-bottom: 0.5rem;                 /* Space below the title */
+}
+
+/* 🎯 QUEST TYPES - The category of each quest (like "Daily", "Weekly") */
+
+/* The type/category badge for each quest */
+.quest-type {
+    display: inline-block;                 /* Make it a small box */
+    background: #667eea;                   /* Purple background */
+    color: white;                          /* White text */
+    padding: 0.25rem 0.75rem;              /* Space inside the badge */
+    border-radius: 1rem;                   /* Make it pill-shaped */
+    font-size: 0.75rem;                    /* Make it smaller */
+    font-weight: 600;                      /* Make it bold */
+    text-transform: uppercase;             /* Make letters UPPERCASE */
+    margin-bottom: 0.75rem;                /* Space below the badge */
+}
+
+/* 📝 QUEST DESCRIPTIONS - What the quest is about */
+
+/* The description text for each quest */
+.quest-description {
+    color: #4a5568;                        /* Medium gray color */
+    margin-bottom: 1rem;                   /* Space below the description */
+    line-height: 1.5;                      /* Make lines easier to read */
+}
+
+/* ACTION BUTTONS - Buttons that do things to your quests */
+
+/* Container for quest action buttons */
+.quest-actions {
+    display: flex;                         /* Put buttons in a row */
+    gap: 0.5rem;                          /* Small space between buttons */
+    flex-wrap: wrap;                       /* Wrap to next line if needed */
+}
+
+/* General style for all quest buttons */
+.quest-btn {
+    padding: 0.5rem 1rem;                  /* Space inside the button */
+    border: none;                          /* No border */
+    border-radius: 0.375rem;               /* Round corners */
+    font-size: 0.875rem;                   /* Slightly smaller text */
+    font-weight: 500;                      /* Medium bold */
+    cursor: pointer;                       /* Show it's clickable */
+    transition: all 0.2s ease;             /* Smooth animation */
+}
+
+/* ✅ COMPLETE BUTTON - Mark quest as done */
+
+/* Button to mark a quest as completed */
+.complete-btn {
+    background: #28a745;                   /* Green background */
+    color: white;                          /* White text */
+}
+
+/* Make complete button darker when you hover over it */
+.complete-btn:hover {
+    background: #218838;                   /* Darker green */
+}
+
+/* ✏️ EDIT BUTTON - Change quest details */
+
+/* Button to edit a quest */
+.edit-btn {
+    background: #ffc107;                   /* Yellow background */
+    color: #212529;                        /* Dark text */
+}
+
+/* Make edit button darker when you hover over it */
+.edit-btn:hover {
+    background: #e0a800;                   /* Darker yellow */
+}
+
+/* 🗑️ DELETE BUTTON - Remove quest completely */
+
+/* Button to delete a quest */
+.delete-btn {
+    background: #dc3545;                   /* Red background */
+    color: white;                          /* White text */
+}
+
+/* Make delete button darker when you hover over it */
+.delete-btn:hover {
+    background: #c82333;                   /* Darker red */
+}
+
+/* MESSAGE NOTIFICATIONS - Success and error messages */
+
+/* General style for all messages */
+.message {
+    padding: 1rem;                         /* Space inside the message */
+    border-radius: 0.5rem;                 /* Round corners */
+    margin-bottom: 1rem;                   /* Space below the message */
+    font-weight: 500;                      /* Medium bold text */
+}
+
+/* ✅ SUCCESS MESSAGES - When something goes right */
+
+/* Green messages for when things work correctly */
+.message.success {
+    background: #d4edda;                   /* Light green background */
+    color: #155724;                        /* Dark green text */
+    border: 1px solid #c3e6cb;             /* Green border */
+}
+
+/* ❌ ERROR MESSAGES - When something goes wrong */
+
+/* Red messages for when there's a problem */
+.message.error {
+    background: #f8d7da;                   /* Light red background */
+    color: #721c24;                        /* Dark red text */
+    border: 1px solid #f5c6cb;             /* Red border */
+}

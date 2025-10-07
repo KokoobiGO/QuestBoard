@@ -1,0 +1,162 @@
+/* 🔐 LOGIN & SIGNUP FORMS - Where you enter your username and password */
+
+/* Container that centers the login/signup form on the page */
+.auth-container {
+    display: flex;                         /* Use flexbox to center things */
+    justify-content: center;               /* Center horizontally */
+    align-items: center;                   /* Center vertically */
+    min-height: 80vh;                      /* Take up most of the screen height */
+}
+
+/* The actual form box where you type your info */
+.auth-form {
+    background: rgba(255, 255, 255, 0.95); /* Almost white background, a little see-through */
+    border-radius: 1rem;                   /* Round corners */
+    padding: 2rem;                         /* Space inside the form */
+    width: 100%;                           /* Take full width available */
+    max-width: 400px;                      /* But don't get too wide */
+}
+
+/* The title at the top of the form (like "Login" or "Sign Up") */
+.auth-header {
+    text-align: center;                    /* Center the title */
+    margin-bottom: 2rem;                   /* Space below the title */
+}
+
+/* FORM FIELDS - The input boxes where you type */
+
+/* Container for each input field (like username, password) */
+.field {
+    margin-bottom: 1.5rem;                 /* Space below each field */
+}
+
+/* Labels that tell you what to type (like "Username:" or "Password:") */
+.field label {
+    display: block;                        /* Put label on its own line */
+    margin-bottom: 0.5rem;                 /* Space below the label */
+    font-weight: 600;                      /* Make it a bit bold */
+}
+
+/* The actual input boxes, text areas, and dropdown menus */
+.field input, .field textarea, .field select {
+    width: 100%;                           /* Take full width of the container */
+    padding: 0.75rem;                      /* Space inside the input box */
+    border: 2px solid #e1e5e9;             /* Light gray border */
+    border-radius: 0.5rem;                 /* Round corners */
+    font-size: 1rem;                       /* Normal text size */
+}
+
+/* When you click in an input box, make the border purple */
+.field input:focus, .field textarea:focus, .field select:focus {
+    outline: none;                         /* Remove the default blue outline */
+    border-color: #667eea;                 /* Change border to purple */
+}
+
+/* ACTION BUTTONS - Buttons that do things when you click them */
+
+/* Main submit buttons (like "Login" or "Create Account") */
+.auth-submit-btn, .create-btn {
+    width: 100%;                           /* Take full width */
+    background: linear-gradient(135deg, #667eea, #764ba2);  /* Purple gradient */
+    color: white;                          /* White text */
+    border: none;                          /* No border */
+    padding: 0.875rem;                     /* Space inside the button */
+    border-radius: 0.5rem;                 /* Round corners */
+    font-size: 1rem;                       /* Normal text size */
+    font-weight: 600;                      /* Make it bold */
+    cursor: pointer;                       /* Show it's clickable */
+    margin-bottom: 1rem;                   /* Space below the button */
+}
+
+/* Clear/Reset button (to empty all the fields) */
+.clear-btn {
+    width: 100%;                           /* Take full width */
+    background: transparent;               /* No background color */
+    color: #666;                           /* Gray text */
+    border: 2px solid #e1e5e9;             /* Light gray border */
+    padding: 0.75rem;                      /* Space inside the button */
+    border-radius: 0.5rem;                 /* Round corners */
+    cursor: pointer;                       /* Show it's clickable */
+    margin-bottom: 1rem;                   /* Space below the button */
+}
+
+/* Toggle button (like "Switch to Sign Up" or "Switch to Login") */
+.toggle-btn {
+    background: none;                      /* No background */
+    border: none;                          /* No border */
+    color: #667eea;                        /* Purple text */
+    font-weight: 600;                      /* Make it bold */
+    cursor: pointer;                       /* Show it's clickable */
+    text-decoration: underline;            /* Underline to show it's clickable */
+}
+
+/* 🪟 POPUP WINDOWS (MODALS) - Windows that appear on top of everything else */
+
+/* The dark background that covers the whole screen when a popup appears */
+.modal {
+    display: none;                         /* Hidden by default */
+    position: fixed;                       /* Stay in place even when scrolling */
+    top: 0;                               /* Start at the very top */
+    left: 0;                              /* Start at the very left */
+    width: 100%;                          /* Cover the whole screen width */
+    height: 100%;                         /* Cover the whole screen height */
+    background-color: rgba(0, 0, 0, 0.5); /* Dark see-through background */
+    z-index: 1000;                        /* Make sure it appears on top of everything */
+    justify-content: center;              /* Center the popup horizontally */
+    align-items: center;                  /* Center the popup vertically */
+}
+
+/* The actual popup window content */
+.modal-content {
+    background: white;                     /* White background */
+    border-radius: 10px;                   /* Round corners */
+    width: 90%;                           /* Take most of the screen width */
+    max-width: 500px;                     /* But don't get too wide */
+    max-height: 90vh;                     /* Don't get too tall */
+    overflow-y: auto;                     /* Add scrollbar if content is too long */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);  /* Shadow to make it look like it's floating */
+    animation: modalFadeIn 0.3s ease;     /* Smooth animation when it appears */
+}
+
+/* Animation that makes the popup fade in smoothly */
+@keyframes modalFadeIn {
+    from { 
+        opacity: 0;                        /* Start invisible */
+        transform: translateY(-20px);      /* Start a little higher */
+    }
+    to { 
+        opacity: 1;                        /* End fully visible */
+        transform: translateY(0);          /* End in the right position */
+    }
+}
+
+/* The header/title area of the popup */
+.modal-header {
+    padding: 1.5rem;                       /* Space inside the header */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* Purple gradient */
+    color: white;                          /* White text */
+    border-radius: 10px 10px 0 0;          /* Round corners only on top */
+    display: flex;                         /* Put title and close button in a row */
+    justify-content: space-between;        /* Spread them apart */
+    align-items: flex-start;               /* Align to the top */
+}
+
+/* The main content area of the popup */
+.modal-body {
+    padding: 1.5rem;                       /* Space inside the body */
+}
+
+/* The X button to close the popup */
+.close-modal {
+    background: none;                      /* No background */
+    border: none;                          /* No border */
+    color: white;                          /* White color */
+    font-size: 1.25rem;                    /* Make it bigger */
+    cursor: pointer;                       /* Show it's clickable */
+    transition: transform 0.2s ease;       /* Smooth animation */
+}
+
+/* Make the close button bigger when you hover over it */
+.close-modal:hover {
+    transform: scale(1.2);                 /* Make it 20% bigger */
+}
