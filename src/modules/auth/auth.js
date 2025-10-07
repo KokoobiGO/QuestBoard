@@ -69,12 +69,25 @@ function initAuth(supabase, ui) {
   async function checkSession() {
     try {
       const { data, error } = await supabase.auth.getSession();
-      if (error) return null;
+      if (error) {
+        // If there's an error with the session (like invalid refresh token), clear it
+        if (error.message?.includes('refresh') || error.message?.includes('token')) {
+          await supabase.auth.signOut();
+        }
+        currentUser = null;
+        return null;
+      }
       const user = data?.session?.user ?? null;
       currentUser = user;
       return user;
     } catch (e) {
       console.error('Error checking session:', e);
+      // Clear potentially corrupted session
+      try {
+        await supabase.auth.signOut();
+      } catch (signOutError) {
+        console.error('Error clearing session:', signOutError);
+      }
       currentUser = null;
       return null;
     }
@@ -141,12 +154,16 @@ function initAuth(supabase, ui) {
     return { currentUser, isSignUp };
   }
 
+  function getCurrentUser() {
+    return currentUser;
+  }
+
   // Keep local state synced with auth changes
   supabase.auth.onAuthStateChange((_event, session) => {
     currentUser = session?.user ?? null;
   });
 
-  return { checkSession, signUp, signIn, signOut, toggleAuthMode, getAuthState };
+  return { checkSession, signUp, signIn, signOut, toggleAuthMode, getAuthState, getCurrentUser };
 }
 
 export { initAuth };

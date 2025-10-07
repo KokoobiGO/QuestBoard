@@ -30,6 +30,8 @@ const elements = {
   authIcon: document.getElementById('authIcon'),
   authMessage: document.getElementById('authMessage'),
   logoutBtn: document.getElementById('logoutBtn'),
+  profileLogoutBtn: document.getElementById('profileLogoutBtn'),
+  profileUsername: document.getElementById('profileUsername'),
   fullName: document.getElementById('fullName'),
   nameField: document.getElementById('nameField'),
   email: document.getElementById('email'),
@@ -44,7 +46,6 @@ const elements = {
   // Nav
   navActions: document.getElementById('navActions'),
   userInfo: document.getElementById('userInfo'),
-  userEmailText: document.getElementById('userEmailText'),
   bellBtn: document.getElementById('bellBtn'),
   profileBtn: document.getElementById('profileBtn'),
   // Profile page
@@ -171,7 +172,13 @@ async function getOrInitUserStats(userId) {
 
   const { data: inserted, error: upsertError } = await supabase
     .from('user_stats')
-    .upsert({ user_id: userId, xp: 0, coins: 0 }, { onConflict: 'user_id' })
+    .upsert({ 
+      user_id: userId, 
+      xp: 0, 
+      coins: 0, 
+      current_streak: 0, 
+      longest_streak: 0 
+    }, { onConflict: 'user_id' })
     .select('*')
     .single();
 
@@ -197,11 +204,6 @@ async function initApp() {
       ui.updateStatsDisplay();
       await ui.updateStreakDisplay(supabase, user.id);
       await quests.fetchQuests(user.id);
-      
-      // Load and display badges
-      const allBadges = await badges.loadBadges();
-      const userBadges = await badges.getUserBadges(user.id);
-      ui.renderBadges(allBadges, userBadges);
       
       ui.updateUserInfo(user);
       
@@ -274,14 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show notifications for new badges
         newBadges.forEach(badge => badges.showBadgeNotification(badge));
         
-        // Refresh badge display if new badges were earned
-        if (newBadges.length > 0) {
-          const updatedUserBadges = await badges.getUserBadges(result.user.id);
-          ui.renderBadges(allBadges, updatedUserBadges);
-        } else {
-          ui.renderBadges(allBadges, userBadges);
-        }
-        
         ui.updateUserInfo(result.user);
         ui.updateStatsDisplay();
         await ui.updateStreakDisplay(supabase, result.user.id);
@@ -306,6 +300,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Logout
   elements.logoutBtn?.addEventListener('click', async () => {
+    await auth.signOut();
+    ui.showAuth();
+  });
+
+  // Profile logout
+  elements.profileLogoutBtn?.addEventListener('click', async () => {
     await auth.signOut();
     ui.showAuth();
   });
@@ -378,13 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Show notifications for new badges
             newBadges.forEach(badge => badges.showBadgeNotification(badge));
-            
-            // Update badge display if new badges were earned
-            if (newBadges.length > 0) {
-              const allBadges = await badges.loadBadges();
-              const updatedUserBadges = await badges.getUserBadges(user.id);
-              ui.renderBadges(allBadges, updatedUserBadges);
-            }
           }
           ui.renderQuests(quests.getQuests(), elements.typeFilter.value, elements.showCompleted.checked);
           ui.showQuestMessage(`Quest completed! Earned ${result.rewards.xp} XP and ${result.rewards.coins} coins`);

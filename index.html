@@ -15,55 +15,17 @@
         <span class="brand-text">QuestBoard</span>
       </div>
       <div class="nav-actions hidden" id="navActions">
-        <div class="stats-container" id="statsContainer">
-          <div class="stat-item">
-            <i class="fas fa-trophy" aria-hidden="true"></i>
-            <span id="levelCounter">1</span>
-            <small>Level</small>
-          </div>
-          <div class="progress-container" aria-label="XP Progress">
-            <div class="progress-bar" id="xpProgressBar" role="progressbar"
-                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-          </div>
-          <div class="stat-item">
-            <i class="fas fa-star" aria-hidden="true"></i>
-            <span id="xpCounter">0</span>
-            <small>XP</small>
-          </div>
-          <div class="stat-item">
-            <i class="fas fa-coins" aria-hidden="true"></i>
-            <span id="coinsCounter">0</span>
-            <small>Coins</small>
-          </div>
-          <div class="stat-item streak-item">
-            <i class="fas fa-fire" aria-hidden="true"></i>
-            <span id="streakCounter">0</span>
-            <small>Streak</small>
-          </div>
-        </div>
+        <div class="nav-buttons-right">
+          <button id="createQuestBtn" class="btn-primary">
+            <i class="fas fa-plus"></i> Create Quest
+          </button>
 
-        <button class="bell-btn" id="bellBtn" aria-label="Notifications">
-          <i class="fas fa-bell" aria-hidden="true"></i>
-          <span class="notification-dot" aria-hidden="true"></span>
-        </button>
-
-        <button class="bell-btn" id="profileBtn" aria-label="Profile">
-          <i class="fas fa-user" aria-hidden="true"></i>
-        </button>
-
-              <button id="createQuestBtn" class="btn-primary">
-                <i class="fas fa-plus"></i> Create Quest
-              </button>
-              <button id="logoutBtn" class="btn-secondary">
-                <i class="fas fa-sign-out-alt"></i> Logout
-              </button>
-
-        <div class="user-info hidden" id="userInfo">
-          <div class="user-email">
-            <i class="fas fa-user" aria-hidden="true"></i>
-            <span id="userEmailText"></span>
-          </div>
-          
+          <button class="profile-btn" id="profileBtn" aria-label="Profile">
+            <div class="profile-avatar">
+              <i class="fas fa-user" aria-hidden="true"></i>
+            </div>
+            <span class="profile-text">Profile</span>
+          </button>
         </div>
       </div>
     </div>
@@ -167,10 +129,7 @@
           </div>
         </div>
 
-        <!-- Badges Section -->
-        <div class="badges-container" id="badgesContainer">
-          <!-- Badges will be rendered here by JavaScript -->
-        </div>
+
       </div>
     </div>
   </main>
@@ -238,28 +197,18 @@
   <div class="profile-page hidden" id="profilePage">
     <div class="profile-container">
       <div class="profile-header">
-        <button class="back-btn" id="backToMainBtn">
-          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        <div class="left-section">
+          <button class="back-btn" id="backToMainBtn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+          </button>
+          <h1 id="profileUsername">Loading...</h1>
+        </div>
+        <button class="logout-btn" id="profileLogoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
         </button>
-        <h1>User Profile</h1>
       </div>
 
       <div class="profile-content">
-        <!-- User Info Section -->
-        <div class="profile-section">
-          <h2><i class="fas fa-user"></i> User Information</h2>
-          <div class="profile-info">
-            <div class="info-item">
-              <span class="label">Email:</span>
-              <span class="value" id="profileEmail">user@example.com</span>
-            </div>
-            <div class="info-item">
-              <span class="label">Member Since:</span>
-              <span class="value" id="profileMemberSince">January 2024</span>
-            </div>
-          </div>
-        </div>
-
         <!-- Stats Section -->
         <div class="profile-section">
           <h2><i class="fas fa-chart-bar"></i> Statistics</h2>
@@ -272,24 +221,10 @@
               </div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-star"></i></div>
-              <div class="stat-info">
-                <span class="stat-value" id="profileXP">0</span>
-                <span class="stat-label">Total XP</span>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon"><i class="fas fa-coins"></i></div>
-              <div class="stat-info">
-                <span class="stat-value" id="profileCoins">0</span>
-                <span class="stat-label">Coins</span>
-              </div>
-            </div>
-            <div class="stat-card">
               <div class="stat-icon"><i class="fas fa-fire"></i></div>
               <div class="stat-info">
                 <span class="stat-value" id="profileStreak">0</span>
-                <span class="stat-label">Current Streak</span>
+                <span class="stat-label">Daily Streak</span>
               </div>
             </div>
           </div>

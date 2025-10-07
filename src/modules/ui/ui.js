@@ -34,19 +34,19 @@ function initUI(elements, stats) {
 
         if (!elements.authTitle) return; // guard – HTML not loaded yet
         if (isSignUp) {
-            elements.authTitle.textContent = 'Create Account';
-            elements.authSubtitle.textContent = 'Start your quest journey';
-            elements.authIcon.className = 'fas fa-user-plus';
-            elements.nameField.classList.remove('hidden');
-            elements.submitText.textContent = 'Sign Up';
-            elements.toggleText.textContent = 'Already have an account? Sign In';
+            if (elements.authTitle) elements.authTitle.textContent = 'Create Account';
+            if (elements.authSubtitle) elements.authSubtitle.textContent = 'Start your quest journey';
+            if (elements.authIcon) elements.authIcon.className = 'fas fa-user-plus';
+            if (elements.nameField) elements.nameField.classList.remove('hidden');
+            if (elements.submitText) elements.submitText.textContent = 'Sign Up';
+            if (elements.toggleText) elements.toggleText.textContent = 'Already have an account? Sign In';
         } else {
-            elements.authTitle.textContent = 'Welcome Back';
-            elements.authSubtitle.textContent = 'Continue your quest journey';
-            elements.authIcon.className = 'fas fa-sign-in-alt';
-            elements.nameField.classList.add('hidden');
-            elements.submitText.textContent = 'Sign In';
-            elements.toggleText.textContent = 'Need an account? Sign Up';
+            if (elements.authTitle) elements.authTitle.textContent = 'Welcome Back';
+            if (elements.authSubtitle) elements.authSubtitle.textContent = 'Continue your quest journey';
+            if (elements.authIcon) elements.authIcon.className = 'fas fa-sign-in-alt';
+            if (elements.nameField) elements.nameField.classList.add('hidden');
+            if (elements.submitText) elements.submitText.textContent = 'Sign In';
+            if (elements.toggleText) elements.toggleText.textContent = 'Need an account? Sign Up';
         }
     }
 
@@ -123,10 +123,17 @@ function initUI(elements, stats) {
 
     function updateUserInfo(user) {
         if (user) {
-            elements.userInfo.classList.remove('hidden');
-            elements.userEmailText.textContent = user.email;
+            if (elements.userInfo) elements.userInfo.classList.remove('hidden');
+            // Update profile username
+            if (elements.profileUsername) {
+                const displayName = user.user_metadata?.full_name || user.email || 'User';
+                elements.profileUsername.textContent = displayName;
+            }
         } else {
-            elements.userInfo.classList.add('hidden');
+            if (elements.userInfo) elements.userInfo.classList.add('hidden');
+            if (elements.profileUsername) {
+                elements.profileUsername.textContent = 'Loading...';
+            }
         }
     }
 
@@ -134,10 +141,10 @@ function initUI(elements, stats) {
      * Quest modal helpers
      * ---------------------------------------------------------------- */
     function clearQuestForm() {
-        elements.questTitle.value = '';
-        elements.questDescription.value = '';
-        elements.questType.value = 'daily';
-        elements.questDueDate.value = '';
+        if (elements.questTitle) elements.questTitle.value = '';
+        if (elements.questDescription) elements.questDescription.value = '';
+        if (elements.questType) elements.questType.value = 'daily';
+        if (elements.questDueDate) elements.questDueDate.value = '';
     }
 
     // Adds/removes CSS classes for smooth fade
@@ -175,12 +182,12 @@ function initUI(elements, stats) {
 
         if (filteredQuests.length === 0) {
             elements.emptyState.classList.remove('hidden');
-            elements.questCount.textContent = '0 quests';
+            if (elements.questCount) elements.questCount.textContent = '0 quests';
             return;
         }
 
         elements.emptyState.classList.add('hidden');
-        elements.questCount.textContent = `${filteredQuests.length} quests`;
+        if (elements.questCount) elements.questCount.textContent = `${filteredQuests.length} quests`;
 
         filteredQuests.forEach(quest => {
             const questCard = document.createElement('div');
@@ -325,29 +332,12 @@ function initUI(elements, stats) {
     }
 
     function updateProfileData(user, userStats, questCounts, allBadges, userBadges) {
-        // Update user info
-        const profileEmail = document.getElementById('profileEmail');
-        const profileMemberSince = document.getElementById('profileMemberSince');
-        
-        if (profileEmail) profileEmail.textContent = user.email || 'N/A';
-        if (profileMemberSince) {
-            const memberSince = new Date(user.created_at || Date.now()).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long'
-            });
-            profileMemberSince.textContent = memberSince;
-        }
-
-        // Update stats
+        // Update stats (only level and streak)
         const profileLevel = document.getElementById('profileLevel');
-        const profileXP = document.getElementById('profileXP');
-        const profileCoins = document.getElementById('profileCoins');
         const profileStreak = document.getElementById('profileStreak');
 
         if (profileLevel) profileLevel.textContent = userStats.level || 1;
-        if (profileXP) profileXP.textContent = userStats.xp || 0;
-        if (profileCoins) profileCoins.textContent = userStats.coins || 0;
-        if (profileStreak) profileStreak.textContent = userStats.currentStreak || 0;
+        if (profileStreak) profileStreak.textContent = userStats.current_streak || 0;
 
         // Update quest progress
         const profileTotalQuests = document.getElementById('profileTotalQuests');

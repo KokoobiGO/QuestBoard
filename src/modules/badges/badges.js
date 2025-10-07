@@ -192,6 +192,7 @@ export function initBadges(supabase) {
         getUserBadges,
         checkAndAwardBadges,
         getCompletedQuestsCount,
+        getWeeklyCompletedQuestsCount: getWeeklyQuestCount,
         showBadgeNotification
     };
 }
