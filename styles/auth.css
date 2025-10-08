@@ -52,6 +52,67 @@
     border-color: #667eea;                 /* Change border to purple */
 }
 
+/* CHECKBOX STYLES - Custom styled checkboxes */
+
+/* Container for checkbox with custom styling */
+.checkbox-label {
+    display: flex;                         /* Put checkbox and text in a row */
+    align-items: center;                   /* Line them up nicely */
+    gap: 0.75rem;                         /* Space between checkbox and text */
+    cursor: pointer;                       /* Show it's clickable */
+    font-weight: 500;                      /* Make text a bit bold */
+    margin-bottom: 0.5rem;                 /* Space below the checkbox */
+}
+
+/* Hide the default checkbox */
+.checkbox-label input[type="checkbox"] {
+    width: auto;                           /* Don't take full width */
+    margin: 0;                            /* Remove default margin */
+    opacity: 0;                           /* Make it invisible */
+    position: absolute;                    /* Take it out of normal flow */
+}
+
+/* Custom checkbox appearance */
+.checkmark {
+    width: 20px;                          /* Size of the checkbox */
+    height: 20px;                         /* Size of the checkbox */
+    border: 2px solid #e1e5e9;            /* Light gray border */
+    border-radius: 4px;                   /* Slightly round corners */
+    display: flex;                        /* Center the checkmark */
+    align-items: center;                  /* Center vertically */
+    justify-content: center;              /* Center horizontally */
+    transition: all 0.2s ease;           /* Smooth animation */
+    flex-shrink: 0;                       /* Don't shrink when text is long */
+}
+
+/* When checkbox is checked, style the custom checkmark */
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+    background: #667eea;                  /* Purple background */
+    border-color: #667eea;                /* Purple border */
+}
+
+/* Add checkmark icon when checked */
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';                         /* Checkmark symbol */
+    color: white;                         /* White checkmark */
+    font-size: 14px;                      /* Size of checkmark */
+    font-weight: bold;                    /* Make it bold */
+}
+
+/* When hovering over checkbox, make it slightly purple */
+.checkbox-label:hover .checkmark {
+    border-color: #667eea;                /* Purple border on hover */
+}
+
+/* FIELD HINTS - Small helper text under form fields */
+.field-hint {
+    display: block;                       /* Put on its own line */
+    color: #6b7280;                       /* Gray color */
+    font-size: 0.875rem;                  /* Smaller text */
+    margin-top: 0.25rem;                  /* Small space above */
+    line-height: 1.4;                     /* Make it easy to read */
+}
+
 /* ACTION BUTTONS - Buttons that do things when you click them */
 
 /* Main submit buttons (like "Login" or "Create Account") */

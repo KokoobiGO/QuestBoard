@@ -145,6 +145,11 @@ function initUI(elements, stats) {
         if (elements.questDescription) elements.questDescription.value = '';
         if (elements.questType) elements.questType.value = 'daily';
         if (elements.questDueDate) elements.questDueDate.value = '';
+        if (elements.isRecurring) elements.isRecurring.checked = false;
+        
+        // Show recurring field for daily type, hide due date field
+        if (elements.recurringField) elements.recurringField.style.display = 'block';
+        if (elements.dueDateField) elements.dueDateField.style.display = 'block';
     }
 
     // Adds/removes CSS classes for smooth fade
@@ -332,11 +337,13 @@ function initUI(elements, stats) {
     }
 
     function updateProfileData(user, userStats, questCounts, allBadges, userBadges) {
-        // Update stats (only level and streak)
+        // Update stats (level, coins, and streak)
         const profileLevel = document.getElementById('profileLevel');
+        const profileCoins = document.getElementById('profileCoins');
         const profileStreak = document.getElementById('profileStreak');
 
         if (profileLevel) profileLevel.textContent = userStats.level || 1;
+        if (profileCoins) profileCoins.textContent = userStats.coins || 0;
         if (profileStreak) profileStreak.textContent = userStats.current_streak || 0;
 
         // Update quest progress

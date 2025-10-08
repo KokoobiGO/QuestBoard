@@ -2,6 +2,7 @@
 
 import { initAuth } from './modules/auth/auth.js';
 import { initQuests } from './modules/quests/quests.js';
+import { initQuestTemplates } from './modules/quests/questTemplates.js';
 import { initUI } from './modules/ui/ui.js';
 import { initBadges } from './modules/badges/badges.js';
 import * as statsModule from './modules/stats/stats.js';
@@ -69,6 +70,9 @@ const elements = {
   questTitle: document.getElementById('questTitle'),
   questDescription: document.getElementById('questDescription'),
   questType: document.getElementById('questType'),
+  isRecurring: document.getElementById('isRecurring'),
+  recurringField: document.getElementById('recurringField'),
+  dueDateField: document.getElementById('dueDateField'),
   questDueDate: document.getElementById('questDueDate'),
   clearQuestBtn: document.getElementById('clearQuestBtn'),
   // Quests list
@@ -85,6 +89,7 @@ const ui = initUI(elements, statsModule);
 const auth = initAuth(supabase, ui);
 const badges = initBadges(supabase);
 const quests = initQuests(supabase, statsModule);
+const questTemplates = initQuestTemplates(supabase);
 
 // ---- Routing ----
 const router = {
@@ -195,6 +200,9 @@ async function initApp() {
 
     const user = await auth.checkSession();
     if (user) {
+      // Update login streak when session is restored
+      await auth.updateLoginStreak(user.id);
+      
       const userStats = await getOrInitUserStats(user.id);
       statsModule.updateUserStats({
         xp: userStats.xp ?? 0,
@@ -203,6 +211,10 @@ async function initApp() {
 
       ui.updateStatsDisplay();
       await ui.updateStreakDisplay(supabase, user.id);
+      
+      // Check and reset daily quests if needed
+      await questTemplates.checkAndResetDailyQuests(user.id);
+      
       await quests.fetchQuests(user.id);
       
       ui.updateUserInfo(user);
@@ -265,6 +277,9 @@ document.addEventListener('DOMContentLoaded', () => {
           coins: userStats.coins ?? 0
         });
 
+        // Check and reset daily quests if needed
+        await questTemplates.checkAndResetDailyQuests(result.user.id);
+
         await quests.fetchQuests(result.user.id);
         
         // Load and display badges, check for new badges
@@ -310,6 +325,29 @@ document.addEventListener('DOMContentLoaded', () => {
     ui.showAuth();
   });
 
+  // Show/hide recurring field based on quest type
+  elements.questType?.addEventListener('change', (e) => {
+    const isDaily = e.target.value === 'daily';
+    if (elements.recurringField) {
+      elements.recurringField.style.display = isDaily ? 'block' : 'none';
+    }
+    // Reset recurring checkbox when switching away from daily
+    if (!isDaily && elements.isRecurring) {
+      elements.isRecurring.checked = false;
+    }
+  });
+
+  // Show/hide due date field based on recurring checkbox
+  elements.isRecurring?.addEventListener('change', (e) => {
+    if (elements.dueDateField) {
+      elements.dueDateField.style.display = e.target.checked ? 'none' : 'block';
+    }
+    // Clear due date when making recurring
+    if (e.target.checked && elements.questDueDate) {
+      elements.questDueDate.value = '';
+    }
+  });
+
   // Create quest
   elements.questForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -318,9 +356,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const description = elements.questDescription.value.trim();
     const type = elements.questType.value;
     const dueDate = elements.questDueDate.value;
+    const isRecurring = elements.isRecurring?.checked || false;
 
     if (!title) {
       ui.showQuestMessage('Please enter a quest title', true);
+      return;
+    }
+
+    // For recurring daily quests, due date is not required
+    if (!isRecurring && !dueDate) {
+      ui.showQuestMessage('Please select a due date', true);
       return;
     }
 
@@ -333,19 +378,41 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const questData = {
-        title,
-        description,
-        type,
-        due_date: dueDate || null
-      };
+      let result;
+      
+      if (type === 'daily' && isRecurring) {
+        // Create a recurring daily quest template
+        const templateData = {
+          title,
+          description,
+          type: 'daily'
+        };
+        result = await questTemplates.createDailyQuestTemplate(templateData, currentUser.id);
+        
+        if (result.success) {
+          ui.showQuestMessage('Recurring daily quest created successfully! It will reset each day.');
+        }
+      } else {
+        // Create a regular quest
+        const questData = {
+          title,
+          description,
+          type,
+          due_date: dueDate || null
+        };
+        result = await quests.createQuest(questData, currentUser.id);
+        
+        if (result.success) {
+          ui.showQuestMessage('Quest created successfully');
+        }
+      }
 
-      const result = await quests.createQuest(questData, currentUser.id);
       if (result.success) {
-        ui.showQuestMessage('Quest created successfully');
         ui.clearQuestForm();
         ui.toggleQuestFormModal(false);
-        ui.renderQuests(quests.getQuests(), elements.typeFilter.value, elements.showCompleted.checked);
+        // Refresh quests to show the new quest/template
+        const allQuests = await quests.fetchTodaysQuests(currentUser.id);
+        ui.renderQuests(allQuests, elements.typeFilter.value, elements.showCompleted.checked);
       } else {
         ui.showQuestMessage(result.error || 'Failed to create quest', true);
       }

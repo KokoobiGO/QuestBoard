@@ -20,6 +20,13 @@
             <i class="fas fa-plus"></i> Create Quest
           </button>
 
+          <div class="stats-display">
+            <div class="coins-display">
+              <i class="fas fa-coins"></i>
+              <span id="coinsCounter">0</span>
+            </div>
+          </div>
+
           <button class="profile-btn" id="profileBtn" aria-label="Profile">
             <div class="profile-avatar">
               <i class="fas fa-user" aria-hidden="true"></i>
@@ -112,7 +119,8 @@
               </div>
               <label class="checkbox-label">
                 <input type="checkbox" id="showCompleted" checked/>
-                <span>Show completed</span>
+                <span class="checkmark"></span>
+                Show completed
               </label>
             </div>
           </div>
@@ -178,7 +186,15 @@
               <option value="one_time">One-time</option>
             </select>
           </div>
-          <div class="field">
+          <div class="field" id="recurringField" style="display: none;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="isRecurring" />
+              <span class="checkmark"></span>
+              Make this a recurring daily quest (resets every day)
+            </label>
+            <small class="field-hint">Recurring quests will automatically reset each day when completed</small>
+          </div>
+          <div class="field" id="dueDateField">
             <label for="questDueDate">Due Date & Time *</label>
             <input type="datetime-local" id="questDueDate" required/>
           </div>
@@ -218,6 +234,13 @@
               <div class="stat-info">
                 <span class="stat-value" id="profileLevel">1</span>
                 <span class="stat-label">Level</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-coins"></i></div>
+              <div class="stat-info">
+                <span class="stat-value" id="profileCoins">0</span>
+                <span class="stat-label">Coins</span>
               </div>
             </div>
             <div class="stat-card">

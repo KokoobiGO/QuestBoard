@@ -104,6 +104,38 @@
     padding: 0.5rem;                       /* Space around the icon */
 }
 
+/* STATS DISPLAY - Shows user stats like coins */
+.stats-display {
+    display: flex;                         /* Put stats in a row */
+    align-items: center;                   /* Line them up nicely */
+    gap: 1rem;                            /* Space between different stats */
+}
+
+/* COINS DISPLAY - Shows current coin balance */
+.coins-display {
+    display: flex;                         /* Put icon and number in a row */
+    align-items: center;                   /* Line them up nicely */
+    gap: 0.5rem;                          /* Space between icon and number */
+    background: rgba(255, 193, 7, 0.1);   /* Light golden background */
+    border: 1px solid rgba(255, 193, 7, 0.3);  /* Light golden border */
+    border-radius: 20px;                   /* Round corners */
+    padding: 0.5rem 1rem;                 /* Space inside */
+    color: #f39c12;                        /* Golden text */
+    font-size: 0.9rem;                     /* Text size */
+    font-weight: 600;                      /* Make it a bit bold */
+    transition: all 0.2s ease;            /* Smooth animation */
+}
+
+.coins-display:hover {
+    background: rgba(255, 193, 7, 0.15);  /* Brighter golden when you hover */
+    transform: translateY(-1px);           /* Move up slightly when you hover */
+}
+
+.coins-display i {
+    color: #f39c12;                        /* Golden coin icon */
+    font-size: 1rem;                       /* Icon size */
+}
+
 /* PROFILE BUTTON - Shows your avatar and name */
 .profile-btn {
     display: flex;                         /* Put avatar and name in a row */

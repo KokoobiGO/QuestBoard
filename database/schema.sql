@@ -148,3 +148,6 @@ GRANT ALL ON public.badges TO authenticated;
 GRANT ALL ON public.badges TO service_role;
 GRANT ALL ON public.user_badges TO authenticated;
 GRANT ALL ON public.user_badges TO service_role;
+
+-- NOTE: After running this schema, also run daily_quest_migration.sql
+-- to add daily quest reset functionality

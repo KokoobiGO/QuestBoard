@@ -6,7 +6,11 @@ let isSignUp = false;
 function initAuth(supabase, ui) {
   async function updateLoginStreak(userId) {
     try {
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      // Use local date instead of UTC to avoid timezone issues
+      const today = new Date();
+      const todayString = today.getFullYear() + '-' + 
+        String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+        String(today.getDate()).padStart(2, '0');
       
       // Get current user stats
       const { data: userStats, error: fetchError } = await supabase
@@ -25,7 +29,7 @@ function initAuth(supabase, ui) {
       
       if (userStats?.last_activity_date) {
         const lastActivity = new Date(userStats.last_activity_date);
-        const todayDate = new Date(today);
+        const todayDate = new Date(todayString);
         const diffTime = todayDate - lastActivity;
         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
         
@@ -53,7 +57,7 @@ function initAuth(supabase, ui) {
           user_id: userId,
           current_streak: newStreak,
           longest_streak: newLongestStreak,
-          last_activity_date: today
+          last_activity_date: todayString
         }, {
           onConflict: 'user_id'
         });
@@ -163,7 +167,7 @@ function initAuth(supabase, ui) {
     currentUser = session?.user ?? null;
   });
 
-  return { checkSession, signUp, signIn, signOut, toggleAuthMode, getAuthState, getCurrentUser };
+  return { checkSession, signUp, signIn, signOut, toggleAuthMode, getAuthState, getCurrentUser, updateLoginStreak };
 }
 
 export { initAuth };

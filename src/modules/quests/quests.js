@@ -3,7 +3,7 @@
 // Global state
 let quests = [];
 
-const QUEST_COLUMNS = 'id,user_id,title,description,type,due_date,completed,created_at';
+const QUEST_COLUMNS = 'id,user_id,title,description,type,due_date,completed,created_at,template_id,reset_date,is_recurring';
 
 /**
  * Initialize quests module
@@ -15,7 +15,11 @@ function initQuests(supabase, stats) {
     // Update streak when quest is completed
     async function updateQuestStreak(userId) {
         try {
-            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            // Use local date instead of UTC to avoid timezone issues
+            const today = new Date();
+            const todayString = today.getFullYear() + '-' + 
+                String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                String(today.getDate()).padStart(2, '0');
             
             // Get current user stats
             const { data: userStats, error: fetchError } = await supabase
@@ -30,7 +34,7 @@ function initQuests(supabase, stats) {
             }
             
             // Only update if this is the first quest completed today
-            if (userStats?.last_activity_date === today) {
+            if (userStats?.last_activity_date === todayString) {
                 // Already completed a quest today, no need to update streak
                 return;
             }
@@ -40,7 +44,7 @@ function initQuests(supabase, stats) {
             
             if (userStats?.last_activity_date) {
                 const lastActivity = new Date(userStats.last_activity_date);
-                const todayDate = new Date(today);
+                const todayDate = new Date(todayString);
                 const diffTime = todayDate - lastActivity;
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 
@@ -68,7 +72,7 @@ function initQuests(supabase, stats) {
                     user_id: userId,
                     current_streak: newStreak,
                     longest_streak: newLongestStreak,
-                    last_activity_date: today
+                    last_activity_date: todayString
                 }, {
                     onConflict: 'user_id'
                 });
@@ -100,6 +104,27 @@ function initQuests(supabase, stats) {
         }
     }
 
+    // Fetch only today's quests (including recurring ones)
+    async function fetchTodaysQuests(userId) {
+        try {
+            const today = new Date().toISOString().split('T')[0];
+            
+            const { data, error } = await supabase
+                .from('quests')
+                .select(QUEST_COLUMNS)
+                .eq('user_id', userId)
+                .or(`reset_date.eq.${today},is_recurring.eq.false`)
+                .order('created_at', { ascending: false });
+            
+            if (error) throw error;
+            
+            return data || [];
+        } catch (error) {
+            console.error('Error fetching today\'s quests:', error);
+            return [];
+        }
+    }
+
     // Create a new quest
     async function createQuest(questData, userId) {
         try {
@@ -116,7 +141,10 @@ function initQuests(supabase, stats) {
                 type: mappedType,
                 user_id: userId,
                 completed: false,
-                created_at: new Date().toISOString()
+                created_at: new Date().toISOString(),
+                template_id: questData.template_id || null,
+                reset_date: questData.reset_date || new Date().toISOString().split('T')[0],
+                is_recurring: questData.is_recurring || false
             };
 
             const { data, error } = await supabase
@@ -253,6 +281,7 @@ function initQuests(supabase, stats) {
 
     return {
         fetchQuests,
+        fetchTodaysQuests,
         createQuest,
         completeQuest,
         deleteQuest,
