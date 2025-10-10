@@ -209,6 +209,62 @@
     </div>
   </div>
 
+  <!-- Edit Quest Modal -->
+  <div class="modal" id="editQuestModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="header-content">
+          <div class="header-icon"><i class="fas fa-edit"></i></div>
+          <div class="header-text">
+            <h2>Edit Quest</h2>
+            <p>Update your quest details</p>
+          </div>
+        </div>
+        <button class="close-modal" id="closeEditModal" aria-label="Close"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="message hidden" id="editQuestMessage"></div>
+        <form id="editQuestForm">
+          <div class="field">
+            <label for="editQuestTitle">Quest Title *</label>
+            <input type="text" id="editQuestTitle" placeholder="Enter quest title" required/>
+          </div>
+          <div class="field">
+            <label for="editQuestDescription">Description</label>
+            <textarea id="editQuestDescription" rows="3" placeholder="Describe your quest..."></textarea>
+          </div>
+          <div class="field">
+            <label for="editQuestType">Quest Type *</label>
+            <select id="editQuestType" required>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="one_time">One-time</option>
+            </select>
+          </div>
+          <div class="field" id="editRecurringField" style="display: none;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="editIsRecurring" />
+              <span class="checkmark"></span>
+              Make this a recurring daily quest (resets every day)
+            </label>
+            <small class="field-hint">Recurring quests will automatically reset each day when completed</small>
+          </div>
+          <div class="field" id="editDueDateField">
+            <label for="editQuestDueDate">Due Date & Time *</label>
+            <input type="datetime-local" id="editQuestDueDate" required/>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="create-btn" id="updateQuestBtn">
+              <i class="fas fa-save"></i><span>Update Quest</span>
+            </button>
+            <button type="button" class="clear-btn" id="cancelEditBtn">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Profile Page -->
   <div class="profile-page hidden" id="profilePage">
     <div class="profile-container">

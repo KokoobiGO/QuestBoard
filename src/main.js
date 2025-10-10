@@ -75,6 +75,20 @@ const elements = {
   dueDateField: document.getElementById('dueDateField'),
   questDueDate: document.getElementById('questDueDate'),
   clearQuestBtn: document.getElementById('clearQuestBtn'),
+  // Edit quest modal & form
+  editQuestModal: document.getElementById('editQuestModal'),
+  closeEditModal: document.getElementById('closeEditModal'),
+  editQuestForm: document.getElementById('editQuestForm'),
+  editQuestMessage: document.getElementById('editQuestMessage'),
+  editQuestTitle: document.getElementById('editQuestTitle'),
+  editQuestDescription: document.getElementById('editQuestDescription'),
+  editQuestType: document.getElementById('editQuestType'),
+  editIsRecurring: document.getElementById('editIsRecurring'),
+  editRecurringField: document.getElementById('editRecurringField'),
+  editDueDateField: document.getElementById('editDueDateField'),
+  editQuestDueDate: document.getElementById('editQuestDueDate'),
+  updateQuestBtn: document.getElementById('updateQuestBtn'),
+  cancelEditBtn: document.getElementById('cancelEditBtn'),
   // Quests list
   questCount: document.getElementById('questCount'),
   typeFilter: document.getElementById('typeFilter'),
@@ -348,6 +362,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Show/hide recurring field based on edit quest type
+  elements.editQuestType?.addEventListener('change', (e) => {
+    const isDaily = e.target.value === 'daily';
+    if (elements.editRecurringField) {
+      elements.editRecurringField.style.display = isDaily ? 'block' : 'none';
+    }
+    // Reset recurring checkbox when switching away from daily
+    if (!isDaily && elements.editIsRecurring) {
+      elements.editIsRecurring.checked = false;
+    }
+  });
+
+  // Show/hide due date field based on edit recurring checkbox
+  elements.editIsRecurring?.addEventListener('change', (e) => {
+    if (elements.editDueDateField) {
+      elements.editDueDateField.style.display = e.target.checked ? 'none' : 'block';
+    }
+    // Clear due date when making recurring
+    if (e.target.checked && elements.editQuestDueDate) {
+      elements.editQuestDueDate.value = '';
+    }
+  });
+
   // Create quest
   elements.questForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -419,6 +456,70 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       console.error('Create quest error:', err);
       ui.showQuestMessage('Failed to create quest', true);
+    } finally {
+      ui.hideLoading();
+    }
+  });
+
+  // Edit quest form submission
+  elements.editQuestForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const questId = elements.editQuestModal?.dataset.questId;
+    if (!questId) {
+      ui.showQuestMessage('No quest selected for editing', true);
+      return;
+    }
+
+    const title = elements.editQuestTitle.value.trim();
+    const description = elements.editQuestDescription.value.trim();
+    const type = elements.editQuestType.value;
+    const dueDate = elements.editQuestDueDate.value;
+    const isRecurring = elements.editIsRecurring?.checked || false;
+
+    if (!title) {
+      ui.showQuestMessage('Please enter a quest title', true);
+      return;
+    }
+
+    // For recurring daily quests, due date is not required
+    if (!isRecurring && !dueDate && type !== 'daily') {
+      ui.showQuestMessage('Please select a due date', true);
+      return;
+    }
+
+    ui.showLoading();
+    try {
+      const { currentUser } = auth.getAuthState();
+      if (!currentUser) {
+        ui.showQuestMessage('You must be logged in to edit quests', true);
+        ui.hideLoading();
+        return;
+      }
+
+      const questData = {
+        title,
+        description,
+        type,
+        due_date: dueDate || null,
+        is_recurring: isRecurring
+      };
+
+      const result = await quests.updateQuest(questId, questData);
+      
+      if (result.success) {
+        ui.showQuestMessage('Quest updated successfully');
+        ui.clearEditQuestForm();
+        ui.toggleEditQuestModal(false);
+        // Refresh quests to show the updated quest
+        const allQuests = await quests.fetchTodaysQuests(currentUser.id);
+        ui.renderQuests(allQuests, elements.typeFilter.value, elements.showCompleted.checked);
+      } else {
+        ui.showQuestMessage(result.error || 'Failed to update quest', true);
+      }
+    } catch (err) {
+      console.error('Update quest error:', err);
+      ui.showQuestMessage('Failed to update quest', true);
     } finally {
       ui.hideLoading();
     }

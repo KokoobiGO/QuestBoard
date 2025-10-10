@@ -262,6 +262,42 @@ function initQuests(supabase, stats) {
         }
     }
 
+    // Update an existing quest
+    async function updateQuest(questId, updateData) {
+        try {
+            const typeMap = {
+                'Daily': 'daily',
+                'Weekly': 'weekly',
+                'One-time': 'one_time',
+                'Monthly': 'monthly'
+            };
+            const mappedType = typeMap[updateData.type] || updateData.type.toLowerCase();
+
+            const updatedQuest = {
+                ...updateData,
+                type: mappedType,
+                updated_at: new Date().toISOString()
+            };
+
+            const { data, error } = await supabase
+                .from('quests')
+                .update(updatedQuest)
+                .eq('id', questId)
+                .select(QUEST_COLUMNS)
+                .single();
+
+            if (error) throw error;
+
+            // Update local quests array
+            quests = quests.map(q => (q.id === questId ? data : q));
+
+            return { success: true, quest: data };
+        } catch (error) {
+            console.error('Error updating quest:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
     // Get all quests
     function getQuests() {
         return quests;
@@ -283,6 +319,7 @@ function initQuests(supabase, stats) {
         fetchQuests,
         fetchTodaysQuests,
         createQuest,
+        updateQuest,
         completeQuest,
         deleteQuest,
         getQuests,

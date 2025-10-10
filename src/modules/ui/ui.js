@@ -10,6 +10,9 @@ function initUI(elements, stats) {
     // Keep track of the latest callbacks passed into initEventListeners so
     // other helpers (like updateUserInfo) can safely reference them.
     let registeredCallbacks = {};
+    
+    // Store current quests for edit functionality
+    let currentQuests = [];
 
     /* ------------------------------------------------------------------
      * Generic helpers
@@ -169,11 +172,71 @@ function initUI(elements, stats) {
         }
     }
 
+    // Toggle edit quest modal
+    function toggleEditQuestModal(show = true) {
+        const modal = elements.editQuestModal;
+        if (!modal) return;
+
+        if (show) {
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => modal.classList.add('open'));
+        } else {
+            modal.classList.remove('open');
+            modal.addEventListener('transitionend', function handler() {
+                modal.style.display = 'none';
+                modal.removeEventListener('transitionend', handler);
+            });
+        }
+    }
+
+    // Populate edit form with quest data
+    function populateEditForm(quest) {
+        if (!quest) return;
+
+        if (elements.editQuestTitle) elements.editQuestTitle.value = quest.title || '';
+        if (elements.editQuestDescription) elements.editQuestDescription.value = quest.description || '';
+        if (elements.editQuestType) elements.editQuestType.value = quest.type || 'daily';
+        if (elements.editIsRecurring) elements.editIsRecurring.checked = quest.is_recurring || false;
+        
+        // Handle due date
+        if (elements.editQuestDueDate && quest.due_date) {
+            const dueDate = new Date(quest.due_date);
+            const localDateTime = new Date(dueDate.getTime() - dueDate.getTimezoneOffset() * 60000);
+            elements.editQuestDueDate.value = localDateTime.toISOString().slice(0, 16);
+        }
+
+        // Show/hide recurring field based on type
+        const isDaily = quest.type === 'daily';
+        if (elements.editRecurringField) {
+            elements.editRecurringField.style.display = isDaily ? 'block' : 'none';
+        }
+        if (elements.editDueDateField) {
+            elements.editDueDateField.style.display = isDaily && quest.is_recurring ? 'none' : 'block';
+        }
+    }
+
+    // Clear edit quest form
+    function clearEditQuestForm() {
+        if (elements.editQuestTitle) elements.editQuestTitle.value = '';
+        if (elements.editQuestDescription) elements.editQuestDescription.value = '';
+        if (elements.editQuestType) elements.editQuestType.value = 'daily';
+        if (elements.editQuestDueDate) elements.editQuestDueDate.value = '';
+        if (elements.editIsRecurring) elements.editIsRecurring.checked = false;
+        
+        // Show recurring field for daily type, hide due date field
+        if (elements.editRecurringField) elements.editRecurringField.style.display = 'block';
+        if (elements.editDueDateField) elements.editDueDateField.style.display = 'block';
+    }
+
     /* ------------------------------------------------------------------
      * Render quests list (placeholder – could be improved)
      * ---------------------------------------------------------------- */
     function renderQuests(quests = [], filterType = 'all', showCompleted = false) {
         console.log('[UI] renderQuests called with:', { quests, filterType, showCompleted });
+        
+        // Store quests for edit functionality
+        currentQuests = quests;
+        
         elements.questsContainer.innerHTML = '';
 
         const normalizedFilter = (filterType || 'all').toLowerCase();
@@ -210,6 +273,7 @@ function initUI(elements, stats) {
                 <div class="quest-description">${quest.description || ''}</div>
                 <div class="quest-actions">
                     ${quest.completed ? '' : '<button class="quest-btn complete-btn" aria-label="Complete Quest">Complete Quest</button>'}
+                    <button class="quest-btn edit-btn" aria-label="Edit Quest"><i class="fas fa-edit"></i></button>
                     <button class="quest-btn delete-btn" aria-label="Delete"><i class="fas fa-trash"></i></button>
                     <span class="due-date"><i class="fas fa-clock"></i> ${due}</span>
                 </div>
@@ -249,6 +313,10 @@ function initUI(elements, stats) {
         // Clear quest form
         elements.clearQuestBtn?.addEventListener('click', () => clearQuestForm());
 
+        // Edit modal event listeners
+        elements.closeEditModal?.addEventListener('click', () => toggleEditQuestModal(false));
+        elements.cancelEditBtn?.addEventListener('click', () => toggleEditQuestModal(false));
+
         // Delegated quest actions
         if (elements.questsContainer) {
             elements.questsContainer.addEventListener('click', (e) => {
@@ -260,6 +328,20 @@ function initUI(elements, stats) {
                 
                 if (target.classList.contains('complete-btn') && callbacks.onComplete) {
                     callbacks.onComplete(id);
+                } else if (target.classList.contains('edit-btn')) {
+                    const questItem = target.closest('.quest-item');
+                    const questId = questItem.dataset.id;
+                    
+                    // Find the quest data from currentQuests
+                    const quest = currentQuests.find(q => q.id === questId);
+                    if (quest) {
+                        populateEditForm(quest);
+                        toggleEditQuestModal(true);
+                        // Store quest ID for update
+                        if (elements.editQuestModal) {
+                            elements.editQuestModal.dataset.questId = questId;
+                        }
+                    }
                 } else if (target.classList.contains('delete-btn') && callbacks.onDelete) {
                     callbacks.onDelete(id);
                 }
@@ -396,6 +478,9 @@ function initUI(elements, stats) {
         updateUserInfo,
         clearQuestForm,
         toggleQuestFormModal,
+        toggleEditQuestModal,
+        populateEditForm,
+        clearEditQuestForm,
         renderQuests,
         renderBadges,
         updateBadgeCount,
