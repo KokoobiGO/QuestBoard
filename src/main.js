@@ -161,6 +161,10 @@ const router = {
       };
 
       ui.updateProfileData(user, userStats, questCounts, allBadges, userBadges);
+      
+      // Load and display equipped avatar
+      await loadAndDisplayEquippedAvatar(user.id);
+      
       ui.showProfile();
     } catch (err) {
       console.error('Profile load error:', err);
@@ -210,6 +214,24 @@ async function getOrInitUserStats(userId) {
   return inserted;
 }
 
+// ---- Helpers ----
+async function loadAndDisplayEquippedAvatar(userId) {
+  try {
+    const equippedAvatarId = await shop.getEquippedAvatar(userId);
+    if (equippedAvatarId) {
+      const avatar = shop.availableAvatars.find(a => a.id === equippedAvatarId);
+      if (avatar) {
+        const profileAvatar = document.querySelector('.profile-avatar');
+        if (profileAvatar) {
+          profileAvatar.textContent = avatar.image;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error loading equipped avatar:', error);
+  }
+}
+
 // ---- App init ----
 async function initApp() {
   ui.showLoading();
@@ -230,6 +252,9 @@ async function initApp() {
 
       ui.updateStatsDisplay();
       await ui.updateStreakDisplay(supabase, user.id);
+      
+      // Load and display equipped avatar
+      await loadAndDisplayEquippedAvatar(user.id);
       
       // Check and reset daily quests if needed
       await questTemplates.checkAndResetDailyQuests(user.id);
@@ -313,6 +338,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.updateUserInfo(result.user);
         ui.updateStatsDisplay();
         await ui.updateStreakDisplay(supabase, result.user.id);
+        
+        // Load and display equipped avatar
+        await loadAndDisplayEquippedAvatar(result.user.id);
+        
         ui.showDashboard();
         ui.renderQuests(quests.getQuests());
       } else {
