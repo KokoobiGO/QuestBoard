@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Schema Verification</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 QuestBoard Database Schema Verification</h1>
+        <p>This tool verifies that all required database tables and columns exist in your Supabase instance.</p>
+        
+        <button onclick="verifySchema()">🔍 Verify Database Schema</button>
+        <button onclick="applySchema()">🛠️ Apply Schema (if needed)</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://knywwxyohcuwooxosgfb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtueXd3eHlvaGN1d29veG9zZ2ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0MTg5OTIsImV4cCI6MjA3Mjk5NDk5Mn0.7RwHL2gESUQzINB7EsUEMysEeVvof7RPTyA5WdX147E';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+        
+        async function verifySchema() {
+            document.getElementById('results').innerHTML = '';
+            addResult('🔍 Starting database schema verification...', 'info');
+            
+            try {
+                // Test 1: Check if quests table exists and has correct columns
+                addResult('📋 Checking quests table...', 'info');
+                const { data: questsData, error: questsError } = await supabase
+                    .from('quests')
+                    .select('id, title, description, type, due_date, user_id, completed')
+                    .limit(1);
+                
+                if (questsError) {
+                    addResult(`❌ Quests table error: ${questsError.message}`, 'error');
+                } else {
+                    addResult('✅ Quests table exists and accessible', 'success');
+                }
+                
+                // Test 2: Check if user_stats table exists with all columns
+                addResult('📊 Checking user_stats table...', 'info');
+                const { data: statsData, error: statsError } = await supabase
+                    .from('user_stats')
+                    .select('id, user_id, xp, coins, current_streak, longest_streak, equipped_avatar')
+                    .limit(1);
+                
+                if (statsError) {
+                    addResult(`❌ User_stats table error: ${statsError.message}`, 'error');
+                } else {
+                    addResult('✅ User_stats table exists with all required columns', 'success');
+                }
+                
+                // Test 3: Check if badges table exists
+                addResult('🏅 Checking badges table...', 'info');
+                const { data: badgesData, error: badgesError } = await supabase
+                    .from('badges')
+                    .select('id, name, description, icon, type, requirement')
+                    .limit(1);
+                
+                if (badgesError) {
+                    addResult(`❌ Badges table error: ${badgesError.message}`, 'error');
+                } else {
+                    addResult(`✅ Badges table exists with ${badgesData?.length || 0} badges`, 'success');
+                }
+                
+                // Test 4: Check if user_badges table exists
+                addResult('🎖️ Checking user_badges table...', 'info');
+                const { data: userBadgesData, error: userBadgesError } = await supabase
+                    .from('user_badges')
+                    .select('id, user_id, badge_id')
+                    .limit(1);
+                
+                if (userBadgesError) {
+                    addResult(`❌ User_badges table error: ${userBadgesError.message}`, 'error');
+                } else {
+                    addResult('✅ User_badges table exists and accessible', 'success');
+                }
+                
+                addResult('🎉 Schema verification completed!', 'success');
+                
+            } catch (error) {
+                addResult(`❌ Verification failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function applySchema() {
+            document.getElementById('results').innerHTML = '';
+            addResult('🛠️ Applying database schema...', 'info');
+            
+            try {
+                // This would typically be done through Supabase SQL editor
+                addResult('⚠️ Schema application should be done through Supabase SQL editor', 'info');
+                addResult('📝 Please run the schema.sql file in your Supabase project', 'info');
+                addResult('🔗 Go to: https://supabase.com/dashboard/project/knywwxyohcuwooxosgfb/sql', 'info');
+                
+            } catch (error) {
+                addResult(`❌ Schema application failed: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

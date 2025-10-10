@@ -221,3 +221,192 @@
 .close-modal:hover {
     transform: scale(1.2);                 /* Make it 20% bigger */
 }
+
+/* 🛒 SHOP MODAL - Styles for the avatar shop */
+
+/* Shop balance display */
+.shop-balance {
+    background: rgba(255, 193, 7, 0.1);   /* Light golden background */
+    border: 1px solid rgba(255, 193, 7, 0.3);  /* Light golden border */
+    border-radius: 10px;                   /* Round corners */
+    padding: 1rem;                         /* Space inside */
+    margin-bottom: 1.5rem;                 /* Space below */
+    text-align: center;                    /* Center the text */
+}
+
+.balance-display {
+    display: flex;                         /* Put items in a row */
+    align-items: center;                   /* Line them up nicely */
+    justify-content: center;               /* Center everything */
+    gap: 0.5rem;                          /* Space between items */
+    font-size: 1.1rem;                     /* Make text a bit bigger */
+    font-weight: 600;                      /* Make it bold */
+    color: #f39c12;                        /* Golden color */
+}
+
+.balance-display i {
+    font-size: 1.2rem;                     /* Make coin icon bigger */
+    color: #f39c12;                        /* Golden color */
+}
+
+/* Shop sections */
+.shop-section {
+    margin-bottom: 2rem;                   /* Space below each section */
+}
+
+.shop-section h3 {
+    margin-bottom: 1rem;                   /* Space below section title */
+    color: #333;                           /* Dark text */
+    font-size: 1.2rem;                     /* Make title bigger */
+    font-weight: 600;                      /* Make it bold */
+}
+
+/* Avatar gallery grid */
+.avatar-gallery {
+    display: grid;                         /* Use grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));  /* Responsive columns */
+    gap: 1rem;                            /* Space between items */
+    padding: 0.5rem 0;                    /* Space above and below */
+}
+
+/* Individual avatar items */
+.avatar-item {
+    background: white;                     /* White background */
+    border: 2px solid #e5e7eb;           /* Light gray border */
+    border-radius: 10px;                   /* Round corners */
+    padding: 1rem;                         /* Space inside */
+    text-align: center;                    /* Center everything */
+    transition: all 0.3s ease;            /* Smooth animation */
+    cursor: pointer;                       /* Show it's clickable */
+    position: relative;                    /* For positioning badges */
+}
+
+.avatar-item:hover {
+    border-color: #667eea;                 /* Purple border on hover */
+    transform: translateY(-2px);           /* Move up slightly */
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);  /* Add shadow */
+}
+
+/* Avatar preview image */
+.avatar-preview {
+    width: 60px;                           /* Set size */
+    height: 60px;                          /* Set size */
+    border-radius: 50%;                    /* Make it round */
+    margin: 0 auto 0.5rem;                /* Center and add space below */
+    display: flex;                         /* Center the content */
+    align-items: center;                   /* Center vertically */
+    justify-content: center;               /* Center horizontally */
+    font-size: 1.5rem;                     /* Make icon bigger */
+    color: white;                          /* White text */
+    background: linear-gradient(135deg, #667eea, #764ba2);  /* Purple gradient */
+}
+
+/* Avatar name */
+.avatar-name {
+    font-size: 0.9rem;                     /* Text size */
+    font-weight: 600;                      /* Make it bold */
+    color: #333;                           /* Dark text */
+    margin-bottom: 0.5rem;                 /* Space below */
+}
+
+/* Avatar price */
+.avatar-price {
+    display: flex;                         /* Put icon and price in a row */
+    align-items: center;                   /* Line them up nicely */
+    justify-content: center;               /* Center everything */
+    gap: 0.25rem;                         /* Small space between icon and price */
+    font-size: 0.8rem;                     /* Smaller text */
+    color: #f39c12;                        /* Golden color */
+    font-weight: 600;                      /* Make it bold */
+    margin-bottom: 0.5rem;                 /* Space below */
+}
+
+/* Purchase/Equip button */
+.avatar-action {
+    width: 100%;                           /* Full width */
+    padding: 0.5rem;                       /* Space inside */
+    border: none;                          /* No border */
+    border-radius: 6px;                    /* Round corners */
+    font-size: 0.8rem;                     /* Text size */
+    font-weight: 600;                      /* Make it bold */
+    cursor: pointer;                       /* Show it's clickable */
+    transition: all 0.2s ease;            /* Smooth animation */
+}
+
+/* Purchase button (when not owned) */
+.avatar-action.purchase {
+    background: linear-gradient(135deg, #22c55e, #16a34a);  /* Green gradient */
+    color: white;                          /* White text */
+}
+
+.avatar-action.purchase:hover {
+    background: linear-gradient(135deg, #16a34a, #15803d);  /* Darker green on hover */
+    transform: translateY(-1px);           /* Move up slightly */
+}
+
+/* Equip button (when owned but not equipped) */
+.avatar-action.equip {
+    background: linear-gradient(135deg, #667eea, #764ba2);  /* Purple gradient */
+    color: white;                          /* White text */
+}
+
+.avatar-action.equip:hover {
+    background: linear-gradient(135deg, #5a6fd8, #6a42a0);  /* Darker purple on hover */
+    transform: translateY(-1px);           /* Move up slightly */
+}
+
+/* Equipped button (when currently equipped) */
+.avatar-action.equipped {
+    background: #6b7280;                   /* Gray background */
+    color: white;                          /* White text */
+    cursor: default;                       /* Normal cursor */
+}
+
+/* Owned badge */
+.owned-badge {
+    position: absolute;                    /* Position it absolutely */
+    top: 0.5rem;                          /* From the top */
+    right: 0.5rem;                        /* From the right */
+    background: #22c55e;                   /* Green background */
+    color: white;                          /* White text */
+    font-size: 0.7rem;                     /* Small text */
+    padding: 0.2rem 0.4rem;               /* Small padding */
+    border-radius: 10px;                   /* Round corners */
+    font-weight: 600;                      /* Make it bold */
+}
+
+/* Equipped badge */
+.equipped-badge {
+    position: absolute;                    /* Position it absolutely */
+    top: 0.5rem;                          /* From the top */
+    right: 0.5rem;                        /* From the right */
+    background: #667eea;                   /* Purple background */
+    color: white;                          /* White text */
+    font-size: 0.7rem;                     /* Small text */
+    padding: 0.2rem 0.4rem;               /* Small padding */
+    border-radius: 10px;                   /* Round corners */
+    font-weight: 600;                      /* Make it bold */
+}
+
+/* Notification Animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

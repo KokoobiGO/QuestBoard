@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply Migration</title>
+    <script src="lib/supabase.umd.js"></script>
+</head>
+<body>
+    <h1>Apply Database Migration</h1>
+    <button id="applyMigration">Apply equipped_avatar Migration</button>
+    <div id="result"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://knywwxyohcuwooxosgfb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtueXd3eHlvaGN1d29veG9zZ2ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0MTg5OTIsImV4cCI6MjA3Mjk5NDk5Mn0.7RwHL2gESUQzINB7EsUEMysEeVvof7RPTyA5WdX147E';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        document.getElementById('applyMigration').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Applying migration...';
+
+            try {
+                // Add the equipped_avatar column
+                const { data, error } = await supabase.rpc('exec_sql', {
+                    sql: `
+                        ALTER TABLE public.user_stats 
+                        ADD COLUMN IF NOT EXISTS equipped_avatar VARCHAR(100);
+                        
+                        UPDATE public.user_stats 
+                        SET coins = 50 
+                        WHERE coins = 0;
+                    `
+                });
+
+                if (error) {
+                    console.error('Migration error:', error);
+                    resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>
+                                          <p>Please apply the migration manually in Supabase SQL Editor:</p>
+                                          <pre>ALTER TABLE public.user_stats ADD COLUMN IF NOT EXISTS equipped_avatar VARCHAR(100);</pre>`;
+                } else {
+                    resultDiv.innerHTML = '<p style="color: green;">Migration applied successfully!</p>';
+                }
+            } catch (err) {
+                console.error('Migration error:', err);
+                resultDiv.innerHTML = `<p style="color: red;">Error: ${err.message}</p>
+                                      <p>Please apply the migration manually in Supabase SQL Editor:</p>
+                                      <pre>ALTER TABLE public.user_stats ADD COLUMN IF NOT EXISTS equipped_avatar VARCHAR(100);</pre>`;
+            }
+        });
+    </script>
+</body>
+</html>

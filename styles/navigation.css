@@ -175,6 +175,32 @@
     font-size: 0.9rem;                     /* Text size */
 }
 
+/* SHOP BUTTON - Shows the shop icon and text */
+.shop-btn {
+    display: flex;                         /* Put icon and text in a row */
+    align-items: center;                   /* Line them up nicely */
+    gap: 0.5rem;                          /* Space between icon and text */
+    background: rgba(34, 197, 94, 0.1);   /* Light green background */
+    border: 1px solid rgba(34, 197, 94, 0.2);  /* Light green border */
+    border-radius: 20px;                   /* Round corners */
+    padding: 0.5rem 1rem;                 /* Space inside */
+    color: #22c55e;                        /* Green text */
+    cursor: pointer;                       /* Show it's clickable */
+    transition: all 0.2s ease;            /* Smooth animation on hover */
+    font-size: 0.9rem;                     /* Text size */
+    font-weight: 600;                      /* Make it a bit bold */
+}
+
+.shop-btn:hover {
+    background: rgba(34, 197, 94, 0.15);  /* Darker green when you hover */
+    transform: translateY(-1px);           /* Move up slightly when you hover */
+}
+
+/* The shop text */
+.shop-text {
+    font-size: 0.9rem;                     /* Text size */
+}
+
 /* CREATE QUEST BUTTON - The big button to make new quests */
 .create-quest-btn {
     display: flex;                         /* Put icon and text in a row */

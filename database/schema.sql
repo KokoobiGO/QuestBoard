@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS public.user_stats (
     current_streak INTEGER DEFAULT 0 NOT NULL,
     longest_streak INTEGER DEFAULT 0 NOT NULL,
     last_activity_date DATE,
+    equipped_avatar VARCHAR(100),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );

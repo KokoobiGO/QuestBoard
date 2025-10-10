@@ -5,6 +5,7 @@ import { initQuests } from './modules/quests/quests.js';
 import { initQuestTemplates } from './modules/quests/questTemplates.js';
 import { initUI } from './modules/ui/ui.js';
 import { initBadges } from './modules/badges/badges.js';
+import { initShop } from './modules/shop/shop.js';
 import * as statsModule from './modules/stats/stats.js';
 
 // ---- Supabase ----
@@ -48,6 +49,9 @@ const elements = {
   navActions: document.getElementById('navActions'),
   userInfo: document.getElementById('userInfo'),
   bellBtn: document.getElementById('bellBtn'),
+  shopBtn: document.getElementById('shopBtn'),
+  shopModal: document.getElementById('shopModal'),
+  closeShopModal: document.getElementById('closeShopModal'),
   profileBtn: document.getElementById('profileBtn'),
   // Profile page
   profilePage: document.getElementById('profilePage'),
@@ -102,6 +106,7 @@ const elements = {
 const ui = initUI(elements, statsModule);
 const auth = initAuth(supabase, ui);
 const badges = initBadges(supabase);
+const shop = initShop(supabase);
 const quests = initQuests(supabase, statsModule);
 const questTemplates = initQuestTemplates(supabase);
 
@@ -577,6 +582,20 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.hideLoading();
       }
     }
+  });
+
+  // Shop button event listeners
+  elements.shopBtn?.addEventListener('click', async () => {
+    const user = auth.getCurrentUser();
+    if (user) {
+      const userStats = statsModule.getUserStats();
+      await shop.renderShop(user.id, userStats.coins);
+      ui.toggleShopModal(true);
+    }
+  });
+
+  elements.closeShopModal?.addEventListener('click', () => {
+    ui.toggleShopModal(false);
   });
 
   // Profile button event listeners

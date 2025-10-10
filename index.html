@@ -27,6 +27,11 @@
             </div>
           </div>
 
+          <button id="shopBtn" class="shop-btn" aria-label="Shop">
+            <i class="fas fa-store"></i>
+            <span class="shop-text">Shop</span>
+          </button>
+
           <button class="profile-btn" id="profileBtn" aria-label="Profile">
             <div class="profile-avatar">
               <i class="fas fa-user" aria-hidden="true"></i>
@@ -261,6 +266,44 @@
             <button type="button" class="clear-btn" id="cancelEditBtn">Cancel</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shop Modal -->
+  <div class="modal" id="shopModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="header-content">
+          <div class="header-icon"><i class="fas fa-store"></i></div>
+          <div class="header-text">
+            <h2>Avatar Shop</h2>
+            <p>Spend your coins on awesome avatars!</p>
+          </div>
+        </div>
+        <button class="close-modal" id="closeShopModal" aria-label="Close"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="message hidden" id="shopMessage"></div>
+        
+        <!-- User's current coins -->
+        <div class="shop-balance">
+          <div class="balance-display">
+            <i class="fas fa-coins"></i>
+            <span>Your Balance: </span>
+            <span id="shopCoinsBalance">0</span>
+            <span> coins</span>
+          </div>
+        </div>
+
+        <!-- Avatar Gallery -->
+        <div class="shop-section">
+          <h3>Avatars</h3>
+          <div class="avatar-gallery" id="avatarGallery">
+            <!-- Avatar items will be populated by JavaScript -->
+          </div>
+        </div>
       </div>
     </div>
   </div>

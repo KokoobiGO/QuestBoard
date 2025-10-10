@@ -33,6 +33,11 @@
         display: none;                     /* Hide the profile text completely */
     }
     
+    /* Shop text gets hidden on small screens to save space */
+    .shop-text {
+        display: none;                     /* Hide the shop text completely */
+    }
+    
     /* STATS AND PROGRESS - Number displays for phones */
     
     /* Stats container stacks in one column */

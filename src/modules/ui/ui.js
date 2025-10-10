@@ -189,6 +189,23 @@ function initUI(elements, stats) {
         }
     }
 
+    // Toggle shop modal
+    function toggleShopModal(show = true) {
+        const modal = elements.shopModal;
+        if (!modal) return;
+
+        if (show) {
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => modal.classList.add('open'));
+        } else {
+            modal.classList.remove('open');
+            modal.addEventListener('transitionend', function handler() {
+                modal.style.display = 'none';
+                modal.removeEventListener('transitionend', handler);
+            });
+        }
+    }
+
     // Populate edit form with quest data
     function populateEditForm(quest) {
         if (!quest) return;
@@ -479,6 +496,7 @@ function initUI(elements, stats) {
         clearQuestForm,
         toggleQuestFormModal,
         toggleEditQuestModal,
+        toggleShopModal,
         populateEditForm,
         clearEditQuestForm,
         renderQuests,
